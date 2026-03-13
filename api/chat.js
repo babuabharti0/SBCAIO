@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
   try {
 
-    const { message } = req.body;
+    const message = req.body.message || req.body.prompt;
 
     if (!message) {
       return res.status(400).json({ error: "No message provided" });
