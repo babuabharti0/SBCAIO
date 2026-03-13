@@ -1,25 +1,15 @@
-export default async function handler(req, res) {
-
-  const { message } = req.body;
-
-  const response = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + process.env.GEMINI_API_KEY,
+const result = await ai.models.generateContent({
+  model: "gemini-1.5-flash",
+  contents: [
     {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [{ text: message }]
-          }
-        ]
-      })
+      role: "user",
+      parts: [{ text: prompt }]
     }
-  );
+  ]
+});
 
-  const data = await response.json();
+const text =
+  result.candidates?.[0]?.content?.parts?.[0]?.text ||
+  "Sorry, I couldn't generate a response.";
 
-  res.status(200).json(data);
-}
+return res.status(200).json({ message: text });
