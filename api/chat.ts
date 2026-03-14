@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import { companyKnowledge } from "../src/data/companyKnowledge.js";
+import { companyKnowledge } from "../src/data/companyKnowledge";
 
 export default async function handler(req, res) {
 
