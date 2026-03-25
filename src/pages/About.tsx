@@ -2,49 +2,57 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { CheckCircle2, Star } from 'lucide-react';
 import { AnimatedBackground } from '../components/AnimatedBackground';
+import { DepthLayer } from '../components/Global3D';
 
-const BASE_URL = 'https://sbcaio.com/';
-
-const StatCard = ({ number, symbol, title, description, icon }: { number: string; symbol: string; title: string; description: string; icon: string }) => (
+const StatCard = ({ number, symbol, title, description }: { number: string; symbol: string; title: string; description: string }) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
-    className="flex flex-col p-6 rounded-2xl bg-white shadow-xl border border-black/5 hover:border-primary/20 transition-all group"
+    style={{ transformStyle: "preserve-3d", transform: 'translateZ(70px)' }}
+    className="flex flex-col p-6 rounded-2xl bg-white shadow-xl border border-black/5 hover:border-primary/50 hover:shadow-[0_12px_40px_-10px_rgba(0,255,0,0.2)] transition-colors duration-500 group"
   >
-    <div className="flex items-center justify-between mb-4">
-      <div className="text-4xl font-bold font-orbitron">
-        <span className="text-black">{number}</span>
-        <span className="text-primary">{symbol}</span>
+    <div className="relative z-10" style={{ transform: 'translateZ(30px)' }}>
+      <div className="flex items-center justify-between mb-4">
+        <div className="text-4xl font-bold font-orbitron">
+          <span className="text-black">{number}</span>
+          <span className="text-primary">{symbol}</span>
+        </div>
       </div>
-      <img src={`${BASE_URL}${icon}`} alt={title} className="w-12 h-12 grayscale group-hover:grayscale-0 transition-all" referrerPolicy="no-referrer" />
+      <h4 className="text-lg font-bold mb-2">{title}</h4>
+      <p className="text-sm text-gray-600">{description}</p>
     </div>
-    <h4 className="text-lg font-bold mb-2">{title}</h4>
-    <p className="text-sm text-gray-600">{description}</p>
   </motion.div>
 );
 
 const Button = ({ children, variant = 'primary', className = '', href = '#' }: { children: React.ReactNode; variant?: 'primary' | 'outline'; className?: string; href?: string }) => {
-  const baseStyles = "inline-flex items-center justify-center px-8 py-3 rounded-full font-orbitron text-sm font-bold transition-all duration-300 transform hover:scale-[1.02]";
+  const baseStyles = "btn-premium inline-flex items-center justify-center px-8 py-3 rounded-full font-orbitron text-sm font-bold transition-all duration-300";
   const variants = {
-    primary: "bg-primary text-white hover:bg-opacity-90 shadow-lg shadow-primary/20",
-    outline: "border-2 border-primary text-primary hover:bg-primary hover:text-white"
+    primary: "primary bg-primary text-white shadow-[0_0_15px_rgba(0,255,0,0.3)] hover:shadow-[0_0_25px_rgba(0,255,0,0.6)]",
+    outline: "outline border-2 border-primary text-primary hover:bg-primary hover:text-white hover:shadow-[0_0_20px_rgba(0,255,0,0.5)]"
   };
   
   return (
-    <a href={href} className={`${baseStyles} ${variants[variant]} ${className}`}>
+    <motion.a 
+      href={href} 
+      className={`${baseStyles} ${variants[variant]} ${className}`}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
       {children}
-    </a>
+    </motion.a>
   );
 };
 
 export const About = () => {
   return (
-    <>
+    <DepthLayer depth={0} interactive={true}>
       {/* Page Title Section */}
-      <section className="pt-40 pb-20 bg-dark-classic text-white relative overflow-hidden">
-        <AnimatedBackground />
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <section className="pt-40 pb-20 bg-dark-classic text-white relative overflow-hidden" style={{ transformStyle: 'preserve-3d' }}>
+        <DepthLayer depth={-200} className="absolute inset-[-10%] w-[120%] h-[120%] z-0">
+          <AnimatedBackground />
+        </DepthLayer>
+        <div className="max-w-7xl mx-auto px-6 relative z-10" style={{ transform: 'translateZ(40px)' }}>
           <h1 className="text-5xl md:text-7xl font-black mb-6 font-orbitron">About Us.</h1>
           <div className="flex items-center space-x-4 text-sm font-medium uppercase tracking-widest text-gray-400">
             <a href="/" className="hover:text-primary transition-colors">Home</a>
@@ -59,7 +67,7 @@ export const About = () => {
 
       {/* About Content Section */}
       <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center">
+        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-1 gap-20 items-center">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -91,34 +99,14 @@ export const About = () => {
               </div>
             </div>
 
-            <div className="mt-12">
+            <div className="mt-12 flex flex-col sm:flex-row items-start sm:items-center gap-6">
               <Button href="/contact">Book My Consultation</Button>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="relative"
-          >
-            <div className="rounded-[40px] overflow-hidden shadow-2xl border-8 border-gray-50">
-              <img 
-                src={`${BASE_URL}wp-content/uploads/2025/07/IMG-7Y4H3DY.jpg`} 
-                alt="About Us" 
-                className="w-full h-auto"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-            
-            {/* Floating Stats */}
-            <div className="absolute -bottom-10 -left-10 bg-white p-8 rounded-[32px] shadow-2xl border border-black/5 hidden md:block">
-              <div className="flex items-center space-x-4">
-                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                  <CheckCircle2 size={32} />
+              <div className="bg-white p-6 rounded-[32px] shadow-xl border border-black/5 flex items-center space-x-4">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                  <CheckCircle2 size={24} />
                 </div>
                 <div>
-                  <div className="text-3xl font-black font-orbitron">150+</div>
+                  <div className="text-2xl font-black font-orbitron">150+</div>
                   <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">Workflows</div>
                 </div>
               </div>
@@ -135,25 +123,21 @@ export const About = () => {
               number="150" symbol="+" 
               title="Automated Workflows" 
               description="From client acquisition to data analysis, all tailored to industry needs"
-              icon="wp-content/uploads/2025/07/icon04-VTV89M9.png"
             />
             <StatCard 
               number="10" symbol="K+" 
               title="Tasks Deployed Daily" 
               description="Smart systems managing conversations, lead gen, budgets, and more"
-              icon="wp-content/uploads/2025/07/icon13-VTV89M9.png"
             />
             <StatCard 
               number="98" symbol="%" 
               title="Accuracy in AI Responses" 
               description="Ensuring quality and consistency across every AI interaction"
-              icon="wp-content/uploads/2025/07/icon08-VTV89M9.png"
             />
             <StatCard 
               number="200" symbol="+" 
               title="Global Clients" 
               description="Trusted by brands, startups, and agencies worldwide"
-              icon="wp-content/uploads/2025/07/icon15-VTV89M9.png"
             />
           </div>
         </div>
@@ -167,30 +151,16 @@ export const About = () => {
             <h2 className="text-4xl md:text-5xl font-black mb-8">AI-Powered Solutions Built for <span className="heading-title-gradient">Business Growth</span></h2>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="rounded-[40px] overflow-hidden shadow-2xl"
-            >
-              <img 
-                src={`${BASE_URL}wp-content/uploads/2025/07/ai-nuclear-energy-future-innovation-disruptive-technology-683x1024.jpg`} 
-                alt="Growth" 
-                className="w-full h-[600px] object-cover"
-                referrerPolicy="no-referrer"
-              />
-            </motion.div>
-
+          <div className="grid lg:grid-cols-1 gap-16 items-center">
             <div className="space-y-12">
               <p className="text-gray-600 text-lg leading-relaxed">
                 At <strong>SB CAIO</strong>, we deliver innovative, fully customized AI automation systems that help businesses scale faster, reduce costs, and stay competitive. Whether it's streamlining operations or elevating customer experience we engineer the intelligence behind your business success.
               </p>
 
-              <div className="grid gap-8">
+              <div className="grid sm:grid-cols-2 gap-8">
                 <div className="flex gap-6 p-8 rounded-3xl bg-gray-50 border border-black/5 hover:border-primary/20 transition-all group">
                   <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-all">
-                    <img src={`${BASE_URL}wp-content/uploads/2025/07/icon-brand-2.png`} className="w-10 h-10 group-hover:invert" alt="" referrerPolicy="no-referrer" />
+                    <Star size={24} className="text-primary group-hover:text-white" />
                   </div>
                   <div>
                     <h4 className="text-xl font-bold mb-2 font-orbitron">Business Automation</h4>
@@ -200,7 +170,7 @@ export const About = () => {
 
                 <div className="flex gap-6 p-8 rounded-3xl bg-gray-50 border border-black/5 hover:border-primary/20 transition-all group">
                   <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-all">
-                    <img src={`${BASE_URL}wp-content/uploads/2025/07/icon-brand-2.png`} className="w-10 h-10 group-hover:invert" alt="" referrerPolicy="no-referrer" />
+                    <Star size={24} className="text-primary group-hover:text-white" />
                   </div>
                   <div>
                     <h4 className="text-xl font-bold mb-2 font-orbitron">AI for Personalization</h4>
@@ -209,7 +179,7 @@ export const About = () => {
                 </div>
               </div>
 
-              <div className="flex items-center space-x-6 pt-6">
+              <div className="flex items-center justify-center space-x-6 pt-6">
                 <div className="flex -space-x-2">
                   {[1, 2, 3, 4, 5].map((i) => (
                     <div key={i} className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white border-2 border-white">
@@ -223,6 +193,6 @@ export const About = () => {
           </div>
         </div>
       </section>
-    </>
+    </DepthLayer>
   );
 };

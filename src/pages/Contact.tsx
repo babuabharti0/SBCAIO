@@ -3,8 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Phone, Mail, ChevronUp, ChevronDown, Users, Bookmark, MessageSquare, Lightbulb, CheckCircle2 } from 'lucide-react';
 import { AnimatedBackground } from '../components/AnimatedBackground';
 import { submitLead } from '../lib/leadService';
-
-const BASE_URL = 'https://sbcaio.com/';
+import { DepthLayer } from '../components/Global3D';
 
 interface AccordionItemProps {
   title: string;
@@ -79,11 +78,13 @@ export const Contact = () => {
   };
 
   return (
-    <>
+    <DepthLayer depth={0} interactive={true}>
       {/* Page Title Section */}
-      <section className="pt-40 pb-20 bg-dark-classic text-white relative overflow-hidden">
-        <AnimatedBackground />
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <section className="pt-40 pb-20 bg-dark-classic text-white relative overflow-hidden" style={{ transformStyle: 'preserve-3d' }}>
+        <DepthLayer depth={-200} className="absolute inset-[-10%] w-[120%] h-[120%] z-0">
+          <AnimatedBackground />
+        </DepthLayer>
+        <div className="max-w-7xl mx-auto px-6 relative z-10" style={{ transform: 'translateZ(40px)' }}>
           <h1 className="text-5xl md:text-7xl font-black mb-6 font-orbitron">Contact Us.</h1>
           <div className="flex items-center space-x-4 text-sm font-medium uppercase tracking-widest text-gray-400">
             <a href="/" className="hover:text-primary transition-colors">Home</a>
@@ -169,13 +170,15 @@ export const Contact = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Automation Goal</label>
                     <textarea required name="automationGoal" value={formData.automationGoal} onChange={handleChange} rows={4} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none" placeholder="What process would you like to automate?"></textarea>
                   </div>
-                  <button 
+                  <motion.button 
                     type="submit" 
                     disabled={isSubmitting}
-                    className="w-full py-4 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-colors disabled:opacity-70 flex justify-center items-center"
+                    className="btn-premium primary w-full py-4 bg-primary text-white rounded-xl font-bold flex justify-center items-center disabled:opacity-70 shadow-[0_0_15px_rgba(0,255,0,0.3)] hover:shadow-[0_0_25px_rgba(0,255,0,0.6)] transition-all duration-300"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
                     {isSubmitting ? 'Submitting...' : 'Get My Free Automation Plan'}
-                  </button>
+                  </motion.button>
                 </form>
               )}
             </div>
@@ -240,21 +243,7 @@ export const Contact = () => {
             ))}
           </div>
         </div>
-        
-        {/* Decorative Background Images */}
-        <img 
-          src={`${BASE_URL}wp-content/uploads/2025/07/ai-generative-app-woman-chatting-with-artificial-i-VR7EUAB.jpg`} 
-          className="absolute top-20 -left-20 w-64 rounded-3xl opacity-10 rotate-12 hidden xl:block" 
-          alt="" 
-          referrerPolicy="no-referrer"
-        />
-        <img 
-          src={`${BASE_URL}wp-content/uploads/2025/07/IMG-BSGPQHP.jpeg`} 
-          className="absolute bottom-20 -right-20 w-64 rounded-3xl opacity-10 -rotate-12 hidden xl:block" 
-          alt="" 
-          referrerPolicy="no-referrer"
-        />
       </section>
-    </>
+    </DepthLayer>
   );
 };

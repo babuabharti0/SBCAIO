@@ -2,43 +2,35 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 import { AnimatedBackground } from '../components/AnimatedBackground';
+import { DepthLayer } from '../components/Global3D';
 
-const BASE_URL = 'https://sbcaio.com/';
-
-const ServiceCard = ({ title, description, icon }: { title: string; description: string; icon: string }) => (
-  <motion.div 
-    initial={{ opacity: 0, scale: 0.95 }}
-    whileInView={{ opacity: 1, scale: 1 }}
-    viewport={{ once: true }}
-    className="p-8 rounded-3xl bg-white shadow-lg border border-black/5 hover:shadow-2xl transition-all group"
-  >
-    <div className="w-16 h-16 mb-6 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-colors">
-      <img src={`${BASE_URL}${icon}`} alt={title} className="w-10 h-10 group-hover:invert transition-all" referrerPolicy="no-referrer" />
-    </div>
-    <h4 className="text-xl font-bold mb-4 font-orbitron">{title}</h4>
-    <p className="text-gray-600 leading-relaxed">{description}</p>
-  </motion.div>
-);
-
-const IndustryCard = ({ title, description, icon, image }: { title: string; description: string; icon: string; image: string }) => (
+const ServiceCard = ({ title, description }: { title: string; description: string }) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
-    className="relative rounded-[32px] overflow-hidden group bg-white shadow-xl border border-black/5"
+    style={{ transformStyle: "preserve-3d", transform: 'translateZ(70px)' }}
+    className="relative p-8 rounded-3xl bg-[#0a0a0a] text-white shadow-xl border border-white/10 hover:border-primary/50 hover:shadow-[0_12px_40px_-10px_rgba(0,255,0,0.3)] transition-colors duration-500 group overflow-hidden cursor-pointer"
   >
-    <div className="h-64 overflow-hidden">
-      <img 
-        src={`${BASE_URL}${image}`} 
-        alt={title} 
-        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-        referrerPolicy="no-referrer"
-      />
+    {/* Subtle animated background gradient on hover */}
+    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" style={{ transform: 'translateZ(-10px)' }} />
+    
+    <div className="relative z-10" style={{ transform: 'translateZ(30px)' }}>
+      <h4 className="text-xl font-bold mb-4 font-orbitron group-hover:text-primary transition-colors duration-300">{title}</h4>
+      <p className="text-gray-400 leading-relaxed">{description}</p>
     </div>
-    <div className="p-8 relative">
-      <div className="absolute -top-10 left-8 w-20 h-20 rounded-2xl bg-white shadow-xl flex items-center justify-center">
-        <img src={`${BASE_URL}${icon}`} className="w-12 h-12" alt="" referrerPolicy="no-referrer" />
-      </div>
+  </motion.div>
+);
+
+const IndustryCard = ({ title, description }: { title: string; description: string }) => (
+  <motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    style={{ transformStyle: "preserve-3d", transform: 'translateZ(70px)' }}
+    className="relative rounded-[32px] overflow-hidden group bg-white shadow-xl border border-black/5 hover:shadow-[0_12px_40px_-10px_rgba(0,255,0,0.2)] transition-shadow duration-500"
+  >
+    <div className="p-8 relative" style={{ transform: 'translateZ(40px)' }}>
       <h5 className="text-xl font-bold mb-4 mt-6 font-orbitron">{title}</h5>
       <p className="text-gray-500 text-sm leading-relaxed mb-6">{description}</p>
       <a href="/contact" className="inline-flex items-center text-primary font-bold text-sm uppercase tracking-widest hover:translate-x-2 transition-transform">
@@ -49,28 +41,33 @@ const IndustryCard = ({ title, description, icon, image }: { title: string; desc
 );
 
 const Button = ({ children, variant = 'primary', className = '', href = '#' }: { children: React.ReactNode; variant?: 'primary' | 'outline'; className?: string; href?: string }) => {
-  const baseStyles = "inline-flex items-center justify-center px-8 py-3 rounded-full font-orbitron text-sm font-bold transition-all duration-300 transform hover:scale-[1.02]";
+  const baseStyles = "btn-premium inline-flex items-center justify-center px-8 py-3 rounded-full font-orbitron text-sm font-bold transition-all duration-300";
   const variants = {
-    primary: "bg-primary text-white hover:bg-opacity-90 shadow-lg shadow-primary/20",
-    outline: "border-2 border-primary text-primary hover:bg-primary hover:text-white"
+    primary: "primary bg-primary text-white shadow-[0_0_15px_rgba(0,255,0,0.3)] hover:shadow-[0_0_25px_rgba(0,255,0,0.6)]",
+    outline: "outline border-2 border-primary text-primary hover:bg-primary hover:text-white hover:shadow-[0_0_20px_rgba(0,255,0,0.5)]"
   };
   
   return (
-    <a href={href} className={`${baseStyles} ${variants[variant]} ${className}`}>
+    <motion.a 
+      href={href} 
+      className={`${baseStyles} ${variants[variant]} ${className}`}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
       {children}
-    </a>
+    </motion.a>
   );
 };
 
 export const Services = () => {
   return (
-    <>
+    <DepthLayer depth={0} interactive={true}>
       {/* Page Title Section */}
-      <section className="relative min-h-[60vh] flex items-center justify-center bg-dark-classic text-white overflow-hidden">
-        <div className="absolute inset-0 z-0 pointer-events-none">
+      <section className="relative min-h-[60vh] flex items-center justify-center bg-dark-classic text-white overflow-hidden" style={{ transformStyle: 'preserve-3d' }}>
+        <DepthLayer depth={-200} className="absolute inset-[-10%] w-[120%] h-[120%] z-0 pointer-events-none">
           <AnimatedBackground />
-        </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-6 text-center w-full">
+        </DepthLayer>
+        <div className="relative z-10 max-w-7xl mx-auto px-6 text-center w-full" style={{ transform: 'translateZ(40px)' }}>
           <h1 className="text-5xl md:text-7xl font-black mb-6 font-orbitron">Our Services.</h1>
           <div className="flex items-center justify-center space-x-4 text-sm font-medium uppercase tracking-widest text-gray-400">
             <a href="/" className="hover:text-primary transition-colors">Home</a>
@@ -130,32 +127,26 @@ export const Services = () => {
             <ServiceCard 
               title="AI Model Development"
               description="We create context-aware, industry-specific AI models tailored to your business use case. Precision meets performance."
-              icon="wp-content/uploads/2025/07/icon10-VTV89M9.png"
             />
             <ServiceCard 
               title="Data Analysis & KPI Intelligence"
               description="Turn data into insights. Our systems analyze trends, patterns, and KPIs that drive smarter decisions and higher ROI."
-              icon="wp-content/uploads/2025/07/icon14-VTV89M9.png"
             />
             <ServiceCard 
               title="Client Acquisition Automation"
               description="Reach your ideal customers with hyper-targeted messaging via WhatsApp, Gmail, LinkedIn, or Telegram — powered by AI segmentation."
-              icon="wp-content/uploads/2025/07/icon19-VTV89M9.png"
             />
             <ServiceCard 
               title="Marketing and Sales Support"
               description="Dynamic sales funnels built around your marketing strategy. Each step is A/B tested to create high-conversion paths."
-              icon="wp-content/uploads/2025/07/icon19-VTV89M9.png"
             />
             <ServiceCard 
               title="SEO & Website Creation"
               description="From smart landing pages to SEO-optimized websites, we build everything needed to generate and convert traffic — in one click."
-              icon="wp-content/uploads/2025/07/icon19-VTV89M9.png"
             />
             <ServiceCard 
               title="AI Chatbots & Call Centers"
               description="24/7 AI-powered support agents for WhatsApp, Instagram, calls, and more — customized to act just like you."
-              icon="wp-content/uploads/2025/07/icon12-VTV89M9.png"
             />
           </div>
         </div>
@@ -174,38 +165,26 @@ export const Services = () => {
             <IndustryCard 
               title="Healthcare"
               description="Enhancing patient engagement and diagnostics through empathetic, precise prompt flows."
-              icon="wp-content/uploads/2025/07/icon05-VTV89M9.png"
-              image="wp-content/uploads/2025/07/IMG-W42J8H4.jpg"
             />
             <IndustryCard 
               title="Local services"
               description="Delivering secure and compliant AI interactions for banking, insurance, and fintech platforms."
-              icon="wp-content/uploads/2025/07/icon25-VTV89M9.png"
-              image="wp-content/uploads/2025/07/IMG-FM26MYA.jpg"
             />
             <IndustryCard 
               title="Home Services"
               description="Designing adaptive prompt systems that support personalized and interactive learning experiences."
-              icon="wp-content/uploads/2025/07/icon08-VTV89M9.png"
-              image="wp-content/uploads/2025/07/students-at-school-on-lesson-UYTSAFQ.jpg"
             />
             <IndustryCard 
               title="E-Commerce"
               description="Optimizing product discovery, virtual shopping assistants, and customer support automation."
-              icon="wp-content/uploads/2025/07/icon15-VTV89M9.png"
-              image="wp-content/uploads/2025/07/friends-shopping-shoes-online-5PAKNV2.jpg"
             />
             <IndustryCard 
               title="Professional Services"
               description="Structuring AI prompts to streamline case analysis, document review, and legal research assistance."
-              icon="wp-content/uploads/2025/07/icon04-VTV89M9.png"
-              image="wp-content/uploads/2025/07/the-legal-execution-department-makes-an-appointmen-FCSJDA7.jpg"
             />
             <IndustryCard 
               title="Education"
               description="Empowering smarter property search, virtual agent chats, and investment recommendation tools."
-              icon="wp-content/uploads/2025/07/icon13-VTV89M9.png"
-              image="wp-content/uploads/2025/07/students-at-school-on-lesson-UYTSAFQ.jpg"
             />
           </div>
 
@@ -215,6 +194,6 @@ export const Services = () => {
           </div>
         </div>
       </section>
-    </>
+    </DepthLayer>
   );
 };

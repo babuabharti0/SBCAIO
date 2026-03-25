@@ -31,16 +31,21 @@ const NavItem = ({ to, children }: { to: string; children: React.ReactNode }) =>
 };
 
 const Button = ({ children, variant = 'primary', className = '', href = '#' }: { children: React.ReactNode; variant?: 'primary' | 'outline'; className?: string; href?: string }) => {
-  const baseStyles = "inline-flex items-center justify-center px-8 py-3 rounded-full font-orbitron text-sm font-bold transition-all duration-300 transform hover:scale-[1.02]";
+  const baseStyles = "btn-premium inline-flex items-center justify-center px-8 py-3 rounded-full font-orbitron text-sm font-bold transition-all duration-300";
   const variants = {
-    primary: "bg-primary text-white hover:bg-opacity-90 shadow-lg shadow-primary/20",
-    outline: "border-2 border-primary text-primary hover:bg-primary hover:text-white"
+    primary: "primary bg-primary text-white shadow-[0_0_15px_rgba(0,255,0,0.3)] hover:shadow-[0_0_25px_rgba(0,255,0,0.6)]",
+    outline: "outline border-2 border-primary text-primary hover:bg-primary hover:text-white hover:shadow-[0_0_20px_rgba(0,255,0,0.5)]"
   };
   
   return (
-    <a href={href} className={`${baseStyles} ${variants[variant]} ${className}`}>
+    <motion.a 
+      href={href} 
+      className={`${baseStyles} ${variants[variant]} ${className}`}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
       {children}
-    </a>
+    </motion.a>
   );
 };
 
@@ -60,25 +65,13 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     window.scrollTo(0, 0);
   }, [location]);
 
-  const floatingIcons = [
-    { src: 'wp-content/uploads/2025/07/brand1-thinkapt.png', className: 'top-20 left-[10%]' },
-    { src: 'wp-content/uploads/2025/07/brand5-thinkapt.png', className: 'top-40 right-[15%]' },
-    { src: 'wp-content/uploads/2025/07/brand3-thinkapt.png', className: 'bottom-40 left-[15%]' },
-    { src: 'wp-content/uploads/2025/07/brand2-thinkapt.png', className: 'bottom-20 right-[10%]' },
-  ];
-
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ transformStyle: 'preserve-3d' }}>
       {/* Header */}
       <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-black/80 backdrop-blur-md shadow-md py-3' : 'bg-black/40 backdrop-blur-sm py-6'}`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           <Link to="/" className="flex items-center">
-            <img 
-              src={`${BASE_URL}wp-content/uploads/2025/07/WhatsApp-Image-2025-07-17-at-11.51.22_7c890327-Photoroom.png`} 
-              alt="SBCAIO Logo" 
-              className="h-12 md:h-16 w-auto"
-              referrerPolicy="no-referrer"
-            />
+            <span className="text-2xl font-orbitron font-bold text-white tracking-widest">SBCAIO</span>
           </Link>
 
           {/* Desktop Nav */}
@@ -118,7 +111,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         </AnimatePresence>
       </header>
 
-      <main className="flex-grow">
+      <main className="flex-grow" style={{ transformStyle: 'preserve-3d' }}>
         {children}
       </main>
 
@@ -134,30 +127,14 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             </p>
             <Button href="/contact">Book My Consultation</Button>
           </div>
-          
-          {/* Background Decorative Icons */}
-          <div className="absolute inset-0 opacity-10 pointer-events-none">
-            {floatingIcons.map((icon, idx) => (
-              <img 
-                key={idx}
-                src={`${BASE_URL}${icon.src}`}
-                className={`absolute w-32 ${icon.className}`}
-                alt=""
-                referrerPolicy="no-referrer"
-              />
-            ))}
-          </div>
         </section>
 
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
             <div className="col-span-1 md:col-span-2 lg:col-span-1">
-              <img 
-                src={`${BASE_URL}wp-content/uploads/2025/07/WhatsApp-Image-2025-07-17-at-11.51.22_7c890327-Photoroom.png`} 
-                alt="Logo" 
-                className="h-16 mb-8"
-                referrerPolicy="no-referrer"
-              />
+              <div className="mb-8">
+                <span className="text-2xl font-orbitron font-bold text-black tracking-widest">SBCAIO</span>
+              </div>
               <p className="text-gray-500 leading-relaxed">
                 Las Vegas, Nevada, US
               </p>
@@ -247,12 +224,14 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         </motion.button>
 
         {/* Call Now Button (Green) */}
-        <a 
+        <motion.a 
           href="tel:+17253046728" 
-          className="w-14 h-14 bg-[#008A00] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-[1.02] transition-transform"
+          className="btn-premium primary w-14 h-14 bg-[#008A00] text-white rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(0,138,0,0.5)] hover:shadow-[0_0_25px_rgba(0,138,0,0.8)] transition-all duration-300"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
           <Phone size={28} />
-        </a>
+        </motion.a>
       </div>
 
       {/* Kumar AI Assistant */}

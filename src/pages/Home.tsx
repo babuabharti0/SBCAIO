@@ -1,166 +1,178 @@
-import React from 'react';
-import { motion } from 'motion/react';
+import React, { useState, useEffect } from 'react';
+import { motion, useScroll, useTransform, useSpring } from 'motion/react';
 import { CheckCircle2 } from 'lucide-react';
 import { AnimatedBackground } from '../components/AnimatedBackground';
+import { ParticleNetwork } from '../components/ParticleNetwork';
+import { DepthLayer, useGlobal3D } from '../components/Global3D';
 
 const BASE_URL = 'https://sbcaio.com/';
 
-const StatCard = ({ number, symbol, title, description, icon }: { number: string; symbol: string; title: string; description: string; icon: string }) => (
-  <motion.div 
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    className="flex flex-col p-6 rounded-2xl bg-white shadow-xl border border-black/5 hover:border-primary/20 transition-all group"
-  >
-    <div className="flex items-center justify-between mb-4">
-      <div className="text-4xl font-bold font-orbitron">
-        <span className="text-black">{number}</span>
-        <span className="text-primary">{symbol}</span>
+const StatCard = ({ number, symbol, title, description }: { number: string; symbol: string; title: string; description: string }) => {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      style={{ transformStyle: "preserve-3d", transform: 'translateZ(70px)' }}
+      className="flex flex-col p-6 rounded-2xl bg-white shadow-xl border border-black/5 hover:border-primary/50 hover:shadow-[0_12px_40px_-10px_rgba(0,255,0,0.2)] transition-colors duration-500 group text-center"
+    >
+      <div className="relative z-10" style={{ transform: 'translateZ(30px)' }}>
+        <div className="mb-4">
+          <div className="text-4xl font-bold font-orbitron">
+            <span className="text-black">{number}</span>
+            <span className="text-primary">{symbol}</span>
+          </div>
+        </div>
+        <h4 className="text-lg font-bold mb-2">{title}</h4>
+        <p className="text-sm text-gray-600">{description}</p>
       </div>
-      <img src={`${BASE_URL}${icon}`} alt={title} className="w-12 h-12 grayscale group-hover:grayscale-0 transition-all" referrerPolicy="no-referrer" />
-    </div>
-    <h4 className="text-lg font-bold mb-2">{title}</h4>
-    <p className="text-sm text-gray-600">{description}</p>
-  </motion.div>
-);
+    </motion.div>
+  );
+};
 
-const ServiceCard = ({ title, description, icon }: { title: string; description: string; icon: string }) => (
-  <motion.div 
-    initial={{ opacity: 0, scale: 0.95 }}
-    whileInView={{ opacity: 1, scale: 1 }}
-    viewport={{ once: true }}
-    className="p-8 rounded-3xl bg-white shadow-lg border border-black/5 hover:shadow-2xl transition-all group"
-  >
-    <div className="w-16 h-16 mb-6 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-colors">
-      <img src={`${BASE_URL}${icon}`} alt={title} className="w-10 h-10 group-hover:invert transition-all" referrerPolicy="no-referrer" />
-    </div>
-    <h4 className="text-xl font-bold mb-4 font-orbitron">{title}</h4>
-    <p className="text-gray-600 leading-relaxed">{description}</p>
-  </motion.div>
-);
+const ServiceCard = ({ title, description }: { title: string; description: string }) => {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      style={{ transformStyle: "preserve-3d", transform: 'translateZ(70px)' }}
+      className="relative p-8 rounded-3xl bg-[#0a0a0a] text-white shadow-xl border border-white/10 hover:border-primary/50 hover:shadow-[0_12px_40px_-10px_rgba(0,255,0,0.3)] transition-colors duration-500 group overflow-hidden cursor-pointer"
+    >
+      {/* Subtle animated background gradient on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" style={{ transform: 'translateZ(-10px)' }} />
+      
+      <div className="relative z-10" style={{ transform: 'translateZ(30px)' }}>
+        <h4 className="text-xl font-bold mb-4 font-orbitron group-hover:text-primary transition-colors duration-300">{title}</h4>
+        <p className="text-gray-400 leading-relaxed">{description}</p>
+      </div>
+    </motion.div>
+  );
+};
 
-const TeamCard = ({ name, role, image, href = "#" }: { name: string; role: string; image: string; href?: string }) => (
-  <motion.div 
-    whileHover={{ y: -2 }}
-    className="flex flex-col items-center text-center group"
-  >
-    <div className="relative w-full aspect-[3/4] mb-4 overflow-hidden rounded-3xl bg-gray-100">
-      <img 
-        src={`${BASE_URL}${image}`} 
-        alt={name} 
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" 
-        referrerPolicy="no-referrer"
-      />
-    </div>
-    <a href={href} className="text-xl font-bold font-orbitron hover:text-primary transition-colors">{name}</a>
-    <p className="text-sm text-primary font-medium uppercase tracking-wider mt-1">{role}</p>
-  </motion.div>
-);
+const TeamCard = ({ name, role, href = "#" }: { name: string; role: string; href?: string }) => {
+  return (
+    <motion.div 
+      style={{ transformStyle: "preserve-3d", transform: 'translateZ(70px)' }}
+      className="flex flex-col items-center text-center group p-8 rounded-3xl bg-white shadow-xl border border-black/5 hover:border-primary/50 hover:shadow-[0_12px_40px_-10px_rgba(0,255,0,0.2)] transition-colors duration-500"
+    >
+      <div style={{ transform: 'translateZ(40px)' }}>
+        <a href={href} className="text-xl font-bold font-orbitron hover:text-primary transition-colors">{name}</a>
+        <p className="text-sm text-primary font-medium uppercase tracking-wider mt-1">{role}</p>
+      </div>
+    </motion.div>
+  );
+};
 
 const Button = ({ children, variant = 'primary', className = '', href = '#' }: { children: React.ReactNode; variant?: 'primary' | 'outline'; className?: string; href?: string }) => {
-  const baseStyles = "inline-flex items-center justify-center px-8 py-3 rounded-full font-orbitron text-sm font-bold transition-all duration-300 transform hover:scale-[1.02]";
+  const baseStyles = "btn-premium inline-flex items-center justify-center px-8 py-3 rounded-full font-orbitron text-sm font-bold transition-all duration-300";
   const variants = {
-    primary: "bg-primary text-white hover:bg-opacity-90 shadow-lg shadow-primary/20",
-    outline: "border-2 border-primary text-primary hover:bg-primary hover:text-white"
+    primary: "primary bg-primary text-white shadow-[0_0_15px_rgba(0,255,0,0.3)] hover:shadow-[0_0_25px_rgba(0,255,0,0.6)]",
+    outline: "outline border-2 border-primary text-primary hover:bg-primary hover:text-white hover:shadow-[0_0_20px_rgba(0,255,0,0.5)]"
   };
   
   return (
-    <a href={href} className={`${baseStyles} ${variants[variant]} ${className}`}>
+    <motion.a 
+      href={href} 
+      className={`${baseStyles} ${variants[variant]} ${className}`}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
       {children}
-    </a>
+    </motion.a>
   );
 };
 
 export const Home = () => {
-  const partners = [
-    'wp-content/uploads/2025/07/1-1.png',
-    'wp-content/uploads/2025/07/2-1.png',
-    'wp-content/uploads/2025/07/3-1.png',
-    'wp-content/uploads/2025/07/4-1.png',
-    'wp-content/uploads/2025/07/6-1.png'
-  ];
+  const { isMobile } = useGlobal3D();
 
-  const floatingIcons = [
-    { src: 'wp-content/uploads/2025/07/brand1-thinkapt.png', className: 'top-20 left-[10%]' },
-    { src: 'wp-content/uploads/2025/07/brand5-thinkapt.png', className: 'top-40 right-[15%]' },
-    { src: 'wp-content/uploads/2025/07/brand3-thinkapt.png', className: 'bottom-40 left-[15%]' },
-    { src: 'wp-content/uploads/2025/07/brand2-thinkapt.png', className: 'bottom-20 right-[10%]' },
-    { src: 'wp-content/uploads/2025/07/brand6-thinkapt.png', className: 'top-[50%] left-[5%] hidden md:block' },
-    { src: 'wp-content/uploads/2025/07/brand4-thinkapt.png', className: 'top-[50%] right-[5%] hidden md:block' },
-  ];
+  const { scrollY } = useScroll();
+  
+  const smoothScrollY = useSpring(scrollY, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
+  const bgY = useTransform(smoothScrollY, (value) => isMobile ? 0 : value * 0.4);
+  const lettersY = useTransform(smoothScrollY, (value) => isMobile ? 0 : value * 0.2);
 
   return (
-    <>
-      {/* Hero Section */}
-      <section className="relative pt-40 pb-20 overflow-hidden text-white min-h-screen flex flex-col justify-center bg-black">
+    <div className="relative bg-black">
+      <DepthLayer depth={-200} interactive={true} className="fixed inset-0 pointer-events-none z-0">
+        <ParticleNetwork />
+      </DepthLayer>
+      <DepthLayer depth={0} interactive={true}>
+        {/* Hero Section */}
+        <section 
+          className="relative pt-40 pb-20 overflow-hidden text-white min-h-screen flex flex-col justify-center bg-transparent"
+          style={{ transformStyle: 'preserve-3d' }}
+        >
         {/* Animated Background */}
-        <AnimatedBackground />
+        <DepthLayer depth={-200} className="absolute inset-[-10%] w-[120%] h-[120%] z-0">
+          <motion.div style={{ y: bgY }} className="w-full h-full">
+            <AnimatedBackground />
+          </motion.div>
+        </DepthLayer>
 
         {/* Large AI Letters Background */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden">
-          <span className="text-[40vw] font-black font-orbitron text-white/[0.03] select-none">
-            AI
-          </span>
-        </div>
+        <DepthLayer depth={-100} className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden">
+          <motion.div style={{ y: lettersY }}>
+            <span className="text-[40vw] font-black font-orbitron text-white/[0.03] select-none">
+              AI
+            </span>
+          </motion.div>
+        </DepthLayer>
 
-        {floatingIcons.map((icon, idx) => (
-          <img 
-            key={idx}
-            src={`${BASE_URL}${icon.src}`}
-            className={`absolute w-16 md:w-24 opacity-30 pointer-events-none z-10 ${icon.className}`}
-            alt=""
-            referrerPolicy="no-referrer"
-          />
-        ))}
-
-        <div className="max-w-5xl mx-auto px-6 text-center relative z-20">
+        <DepthLayer depth={40} className="max-w-5xl mx-auto px-6 text-center relative z-20">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            initial={{ opacity: 0, y: 20, z: 30 }}
+            animate={{ opacity: 1, y: [0, -4, 0], z: 30 }}
+            transition={{ delay: 0.2, y: { duration: 5, repeat: Infinity, ease: "easeInOut" } }}
             className="text-primary font-orbitron font-bold tracking-[0.2em] mb-6"
+            style={{ transform: 'translateZ(40px)' }}
           >
             AI AUTOMATION AGENCY
           </motion.div>
           
           <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
+            initial={{ opacity: 0, y: 20, z: 50 }}
+            animate={{ opacity: 1, y: [0, -6, 0], z: 50 }}
+            transition={{ delay: 0.4, y: { duration: 6, repeat: Infinity, ease: "easeInOut" } }}
             className="text-4xl md:text-7xl font-black mb-8 leading-tight"
+            style={{ transform: 'translateZ(60px)' }}
           >
             Stay Ahead. Build Smarter. <br />
-            <span className="heading-title-gradient">Scale Faster.</span>
+            <motion.span 
+              className="heading-title-gradient inline-block drop-shadow-[0_0_15px_rgba(0,255,0,0.4)]"
+              animate={{ y: [0, -3, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            >
+              Scale Faster.
+            </motion.span>
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
+            initial={{ opacity: 0, y: 20, z: 20 }}
+            animate={{ opacity: 1, y: [0, -3, 0], z: 20 }}
+            transition={{ delay: 0.6, y: { duration: 4.5, repeat: Infinity, ease: "easeInOut" } }}
             className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-12"
+            style={{ transform: 'translateZ(30px)' }}
           >
             You have a CEO. You have a CFO. You have a COO. But who’s leading your AI strategy?
           </motion.p>
-
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.0 }}
-            className="mt-10"
-          >
-            <p className="text-sm font-orbitron text-gray-500 uppercase tracking-widest mb-8">Our Official Partners</p>
-            <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all">
-              {partners.map((p, i) => (
-                <img key={i} src={`${BASE_URL}${p}`} alt="Partner" className="h-8 md:h-12 w-auto" referrerPolicy="no-referrer" />
-              ))}
-            </div>
-          </motion.div>
-        </div>
+        </DepthLayer>
       </section>
 
       {/* About Section */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+      <motion.section 
+        className="py-24 bg-white"
+        initial={{ opacity: 0, scale: 0.95, y: 50 }}
+        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-1 gap-16 items-center">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -197,60 +209,59 @@ export const Home = () => {
               </div>
             </div>
 
-            <Button variant="outline" href="/contact">Book My Consultation</Button>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="relative"
-          >
-            <div className="rounded-3xl overflow-hidden shadow-2xl">
-              <img src={`${BASE_URL}wp-content/uploads/2025/07/IMG-7Y4H3DY.jpg`} alt="About" className="w-full h-auto" referrerPolicy="no-referrer" />
-            </div>
-            <div className="absolute -bottom-10 -left-10 bg-primary text-white p-8 rounded-3xl shadow-xl hidden lg:block">
-              <div className="text-4xl font-black font-orbitron">98%</div>
-              <div className="text-sm font-medium uppercase tracking-widest">Accuracy Rate</div>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+              <Button variant="outline" href="/contact">Book My Consultation</Button>
+              <div className="bg-primary text-white px-6 py-3 rounded-full shadow-xl inline-flex items-center gap-4">
+                <div className="text-2xl font-black font-orbitron">98%</div>
+                <div className="text-xs font-medium uppercase tracking-widest">Accuracy Rate</div>
+              </div>
             </div>
           </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Stats Section */}
-      <section className="py-24 bg-gray-50">
+      <motion.section 
+        className="py-24 bg-gray-50"
+        initial={{ opacity: 0, scale: 0.95, y: 50 }}
+        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <StatCard 
               number="150" symbol="+" 
               title="Automated Workflows" 
               description="From client acquisition to data analysis, all tailored to industry needs"
-              icon="wp-content/uploads/2025/07/icon04-VTV89M9.png"
             />
             <StatCard 
               number="10" symbol="K+" 
               title="Tasks Deployed Daily" 
               description="Smart systems managing conversations, lead gen, budgets, and more"
-              icon="wp-content/uploads/2025/07/icon13-VTV89M9.png"
             />
             <StatCard 
               number="98" symbol="%" 
               title="Accuracy in AI Responses" 
               description="Ensuring quality and consistency across every AI interaction"
-              icon="wp-content/uploads/2025/07/icon08-VTV89M9.png"
             />
             <StatCard 
               number="200" symbol="+" 
               title="Global Clients" 
               description="Trusted by brands, startups, and agencies worldwide"
-              icon="wp-content/uploads/2025/07/icon15-VTV89M9.png"
             />
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Competitive Edge Section */}
-      <section className="py-24 bg-dark-classic text-white">
+      <motion.section 
+        className="py-24 bg-dark-classic/90 text-white"
+        initial={{ opacity: 0, scale: 0.95, y: 50 }}
+        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <div className="max-w-4xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -284,10 +295,16 @@ export const Home = () => {
             </div>
           </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Team Section */}
-      <section className="py-24 bg-gray-50">
+      <motion.section 
+        className="py-24 bg-gray-50"
+        initial={{ opacity: 0, scale: 0.95, y: 50 }}
+        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-20">
             <div className="text-primary font-orbitron font-bold mb-4">Our Team</div>
@@ -295,18 +312,24 @@ export const Home = () => {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            <TeamCard name="John Bela" role="CEO" image="wp-content/uploads/2026/02/WhatsApp-Image-2026-02-09-at-8.19.07-PM.jpeg" />
-            <TeamCard name="Peter" role="Digital Marketer" image="wp-content/uploads/2026/02/peter-headshot--scaled.png" />
-            <TeamCard name="Kunmi Oduola" role="AI Developer" image="wp-content/uploads/2025/08/3-1.png" />
-            <TeamCard name="Rares Mateas" role="HOC" image="wp-content/uploads/2026/02/IMG-20260203-WA0008.jpg" />
+            <TeamCard name="John Bela" role="CEO" />
+            <TeamCard name="Peter" role="Digital Marketer" />
+            <TeamCard name="Kunmi Oduola" role="AI Developer" />
+            <TeamCard name="Rares Mateas" role="HOC" />
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Benefits Section */}
-      <section className="py-24 bg-white overflow-hidden">
+      <motion.section 
+        className="py-24 bg-white overflow-hidden"
+        initial={{ opacity: 0, scale: 0.95, y: 50 }}
+        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
+          <div className="grid lg:grid-cols-1 gap-20 items-center">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -332,37 +355,22 @@ export const Home = () => {
                 ))}
               </div>
               
-              <div className="mt-12">
+              <div className="mt-12 flex flex-col sm:flex-row items-start sm:items-center gap-6">
                 <Button variant="outline" href="/contact">Book My Consultation</Button>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="relative"
-            >
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-6 pt-12">
-                  <img src={`${BASE_URL}wp-content/uploads/2026/02/Screenshot-2026-02-16-201320.png`} alt="Benefit 1" className="rounded-3xl shadow-xl" referrerPolicy="no-referrer" />
-                  <div className="bg-primary p-8 rounded-3xl text-white">
-                    <div className="text-3xl font-black font-orbitron mb-2">95%</div>
-                    <div className="text-xs uppercase tracking-widest">Efficiency Boost</div>
-                  </div>
+                <div className="bg-primary px-6 py-4 rounded-3xl text-white shadow-xl flex items-center gap-4">
+                  <div className="text-2xl font-black font-orbitron">95%</div>
+                  <div className="text-xs uppercase tracking-widest">Efficiency Boost</div>
                 </div>
-                <div className="space-y-6">
-                  <div className="bg-dark-classic p-8 rounded-3xl text-white">
-                    <div className="text-3xl font-black font-orbitron mb-2">24/7</div>
-                    <div className="text-xs uppercase tracking-widest">AI Support</div>
-                  </div>
-                  <img src={`${BASE_URL}wp-content/uploads/2026/02/Screenshot-2026-02-16-201618.png`} alt="Benefit 2" className="rounded-3xl shadow-xl" referrerPolicy="no-referrer" />
+                <div className="bg-dark-classic px-6 py-4 rounded-3xl text-white shadow-xl flex items-center gap-4">
+                  <div className="text-2xl font-black font-orbitron">24/7</div>
+                  <div className="text-xs uppercase tracking-widest">AI Support</div>
                 </div>
               </div>
             </motion.div>
           </div>
         </div>
-      </section>
-    </>
+      </motion.section>
+      </DepthLayer>
+    </div>
   );
 };
