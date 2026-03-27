@@ -50,12 +50,25 @@ const ServiceCard = ({ title, description }: { title: string; description: strin
   );
 };
 
-const TeamCard = ({ name, role, href = "#" }: { name: string; role: string; href?: string }) => {
+const TeamCard = ({ name, role, image, href = "#" }: { name: string; role: string; image?: string; href?: string }) => {
   return (
     <motion.div 
       style={{ transformStyle: "preserve-3d", transform: 'translateZ(70px)' }}
       className="flex flex-col items-center text-center group p-8 rounded-3xl bg-white shadow-xl border border-black/5 hover:border-primary/50 hover:shadow-[0_12px_40px_-10px_rgba(0,255,0,0.2)] transition-colors duration-500"
     >
+      <div className="relative w-full aspect-[3/4] mb-4 overflow-hidden rounded-3xl shadow-lg" style={{ transform: 'translateZ(20px)' }}>
+        {image ? (
+          <img 
+            src={image} 
+            alt={name} 
+            className="w-full h-full object-cover rounded-2xl"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 font-orbitron text-4xl">
+            {name.charAt(0)}
+          </div>
+        )}
+      </div>
       <div style={{ transform: 'translateZ(40px)' }}>
         <a href={href} className="text-xl font-bold font-orbitron hover:text-primary transition-colors">{name}</a>
         <p className="text-sm text-primary font-medium uppercase tracking-wider mt-1">{role}</p>
@@ -312,10 +325,10 @@ export const Home = () => {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            <TeamCard name="John Bela" role="CEO" />
-            <TeamCard name="Peter" role="Digital Marketer" />
-            <TeamCard name="Kunmi Oduola" role="AI Developer" />
-            <TeamCard name="Rares Mateas" role="HOC" />
+            <TeamCard name="John Bela" role="CEO" image="/john-bela.png" />
+            <TeamCard name="Peter" role="Digital Marketer" image="/peter.png" />
+            <TeamCard name="Kunmi Oduola" role="AI Developer" image="/kunmi-oduola.png" />
+            <TeamCard name="Rares Mateas" role="HOC" image="/rares-mateas.png" />
           </div>
         </div>
       </motion.section>
