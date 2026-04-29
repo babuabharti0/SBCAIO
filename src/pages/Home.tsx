@@ -1,389 +1,156 @@
-import React, { useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'motion/react';
-import { CheckCircle2 } from 'lucide-react';
-import { AnimatedBackground } from '../components/AnimatedBackground';
-import { ParticleNetwork } from '../components/ParticleNetwork';
-import { DepthLayer, useGlobal3D } from '../components/Global3D';
+import React, { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
+import { MotionSection, MotionItem, TiltCard } from '../components/Motion';
+import { Hero3DBackground } from '../components/Hero3DBackground';
+import { Button } from '../components/Button';
+import { MotionIcon } from '../components/MotionIcon';
 
-const BASE_URL = 'https://sbcaio.com/';
-
-const StatCard = ({ number, symbol, title, description }: { number: string; symbol: string; title: string; description: string }) => {
+const FAQItem = ({ question, answer }: { question: string; answer: string }) => {
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      style={{ transformStyle: "preserve-3d", transform: 'translateZ(70px)' }}
-      className="flex flex-col p-6 rounded-2xl bg-white shadow-xl border border-black/5 hover:border-primary/50 hover:shadow-[0_12px_40px_-10px_rgba(0,255,0,0.2)] transition-colors duration-500 group text-center"
-    >
-      <div className="relative z-10" style={{ transform: 'translateZ(30px)' }}>
-        <div className="mb-4">
-          <div className="text-4xl font-bold font-orbitron">
-            <span className="text-black">{number}</span>
-            <span className="text-primary">{symbol}</span>
-          </div>
-        </div>
-        <h4 className="text-lg font-bold mb-2">{title}</h4>
-        <p className="text-sm text-gray-600">{description}</p>
+    <div className="border border-gray-200 rounded-2xl mb-4 bg-white shadow-sm overflow-hidden transition-all duration-300">
+      <button onClick={() => setIsOpen(!isOpen)} className="w-full group text-left px-6 py-5 flex justify-between items-center focus:outline-none focus:bg-gray-50/50 hover:bg-gray-50/50">
+        <span className="font-bold text-lg text-gray-900 pr-8">{question}</span>
+        <MotionIcon type="shift">
+          <ChevronDown className={`w-5 h-5 text-primary transform transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
+        </MotionIcon>
+      </button>
+      <div className={`px-6 overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 pb-5 opacity-100' : 'max-h-0 opacity-0'}`}>
+        <p className="text-gray-600 leading-relaxed group-hover:text-gray-800 transition-colors">{answer}</p>
       </div>
-    </motion.div>
-  );
-};
-
-const ServiceCard = ({ title, description }: { title: string; description: string }) => {
-  return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      style={{ transformStyle: "preserve-3d", transform: 'translateZ(70px)' }}
-      className="relative p-8 rounded-3xl bg-[#0a0a0a] text-white shadow-xl border border-white/10 hover:border-primary/50 hover:shadow-[0_12px_40px_-10px_rgba(0,255,0,0.3)] transition-colors duration-500 group overflow-hidden cursor-pointer"
-    >
-      {/* Subtle animated background gradient on hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" style={{ transform: 'translateZ(-10px)' }} />
-      
-      <div className="relative z-10" style={{ transform: 'translateZ(30px)' }}>
-        <h4 className="text-xl font-bold mb-4 font-orbitron group-hover:text-primary transition-colors duration-300">{title}</h4>
-        <p className="text-gray-400 leading-relaxed">{description}</p>
-      </div>
-    </motion.div>
-  );
-};
-
-const TeamCard = ({ name, role, image, href = "#" }: { name: string; role: string; image?: string; href?: string }) => {
-  return (
-    <motion.div 
-      style={{ transformStyle: "preserve-3d", transform: 'translateZ(70px)' }}
-      className="flex flex-col items-center text-center group p-8 rounded-3xl bg-white shadow-xl border border-black/5 hover:border-primary/50 hover:shadow-[0_12px_40px_-10px_rgba(0,255,0,0.2)] transition-colors duration-500"
-    >
-      <div className="relative w-full aspect-[3/4] mb-4 overflow-hidden rounded-3xl shadow-lg" style={{ transform: 'translateZ(20px)' }}>
-        {image ? (
-          <img 
-            src={image} 
-            alt={name} 
-            className="w-full h-full object-cover rounded-2xl"
-          />
-        ) : (
-          <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 font-orbitron text-4xl">
-            {name.charAt(0)}
-          </div>
-        )}
-      </div>
-      <div style={{ transform: 'translateZ(40px)' }}>
-        <a href={href} className="text-xl font-bold font-orbitron hover:text-primary transition-colors">{name}</a>
-        <p className="text-sm text-primary font-medium uppercase tracking-wider mt-1">{role}</p>
-      </div>
-    </motion.div>
-  );
-};
-
-const Button = ({ children, variant = 'primary', className = '', href = '#' }: { children: React.ReactNode; variant?: 'primary' | 'outline'; className?: string; href?: string }) => {
-  const baseStyles = "btn-premium inline-flex items-center justify-center px-8 py-3 rounded-full font-orbitron text-sm font-bold transition-all duration-300";
-  const variants = {
-    primary: "primary bg-primary text-white shadow-[0_0_15px_rgba(0,255,0,0.3)] hover:shadow-[0_0_25px_rgba(0,255,0,0.6)]",
-    outline: "outline border-2 border-primary text-primary hover:bg-primary hover:text-white hover:shadow-[0_0_20px_rgba(0,255,0,0.5)]"
-  };
-  
-  return (
-    <motion.a 
-      href={href} 
-      className={`${baseStyles} ${variants[variant]} ${className}`}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-    >
-      {children}
-    </motion.a>
+    </div>
   );
 };
 
 export const Home = () => {
-  const { isMobile } = useGlobal3D();
-
-  const { scrollY } = useScroll();
-  
-  const smoothScrollY = useSpring(scrollY, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
-
-  const bgY = useTransform(smoothScrollY, (value) => isMobile ? 0 : value * 0.4);
-  const lettersY = useTransform(smoothScrollY, (value) => isMobile ? 0 : value * 0.2);
-
   return (
     <div className="relative bg-black">
-      <DepthLayer depth={-200} interactive={true} className="fixed inset-0 pointer-events-none z-0">
-        <ParticleNetwork />
-      </DepthLayer>
-      <DepthLayer depth={0} interactive={true}>
-        {/* Hero Section */}
-        <section 
-          className="relative pt-40 pb-20 overflow-hidden text-white min-h-screen flex flex-col justify-center bg-transparent"
-          style={{ transformStyle: 'preserve-3d' }}
-        >
-        {/* Animated Background */}
-        <DepthLayer depth={-200} className="absolute inset-[-10%] w-[120%] h-[120%] z-0">
-          <motion.div style={{ y: bgY }} className="w-full h-full">
-            <AnimatedBackground />
-          </motion.div>
-        </DepthLayer>
-
-        {/* Large AI Letters Background */}
-        <DepthLayer depth={-100} className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden">
-          <motion.div style={{ y: lettersY }}>
-            <span className="text-[40vw] font-black font-orbitron text-white/[0.03] select-none">
-              AI
-            </span>
-          </motion.div>
-        </DepthLayer>
-
-        <DepthLayer depth={40} className="max-w-5xl mx-auto px-6 text-center relative z-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20, z: 30 }}
-            animate={{ opacity: 1, y: [0, -4, 0], z: 30 }}
-            transition={{ delay: 0.2, y: { duration: 5, repeat: Infinity, ease: "easeInOut" } }}
-            className="text-primary font-orbitron font-bold tracking-[0.2em] mb-6"
-            style={{ transform: 'translateZ(40px)' }}
-          >
-            AI AUTOMATION AGENCY
-          </motion.div>
-          
-          <motion.h1 
-            initial={{ opacity: 0, y: 20, z: 50 }}
-            animate={{ opacity: 1, y: [0, -6, 0], z: 50 }}
-            transition={{ delay: 0.4, y: { duration: 6, repeat: Infinity, ease: "easeInOut" } }}
-            className="text-4xl md:text-7xl font-black mb-8 leading-tight"
-            style={{ transform: 'translateZ(60px)' }}
-          >
-            Stay Ahead. Build Smarter. <br />
-            <motion.span 
-              className="heading-title-gradient inline-block drop-shadow-[0_0_15px_rgba(0,255,0,0.4)]"
-              animate={{ y: [0, -3, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            >
-              Scale Faster.
-            </motion.span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20, z: 20 }}
-            animate={{ opacity: 1, y: [0, -3, 0], z: 20 }}
-            transition={{ delay: 0.6, y: { duration: 4.5, repeat: Infinity, ease: "easeInOut" } }}
-            className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-12"
-            style={{ transform: 'translateZ(30px)' }}
-          >
-            You have a CEO. You have a CFO. You have a COO. But who’s leading your AI strategy?
-          </motion.p>
-        </DepthLayer>
-      </section>
-
-      {/* About Section */}
-      <motion.section 
-        className="py-24 bg-white"
-        initial={{ opacity: 0, scale: 0.95, y: 50 }}
-        whileInView={{ opacity: 1, scale: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-      >
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-1 gap-16 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-          >
-            <div className="text-primary font-orbitron font-bold mb-4">ABOUT SBCAIO</div>
-            <h2 className="text-4xl md:text-5xl font-black mb-8">The AI Gap Is Growing</h2>
-            <div className="space-y-6 text-gray-600 text-lg leading-relaxed mb-10">
-              <p>We help small businesses like yours adapt and implement AI in practical ways, that used to be reserved for industry leaders.</p>
-              <p>You don’t need a bigger team, you need proven AI solutions and strategies developed around your unique needs.</p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-8 mb-10">
-              <div>
-                <h5 className="font-bold text-xl mb-3 flex items-center">
-                  <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
-                  Our Vision
-                </h5>
-                <p className="text-sm text-gray-500">To become a global leader in AI-driven automation by reshaping how companies engage with customers.</p>
-              </div>
-              <div>
-                <h5 className="font-bold text-xl mb-3 flex items-center">
-                  <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
-                  Our Mission
-                </h5>
-                <ul className="space-y-2">
-                  {['Help businesses unlock productivity', 'Bridge the gap between tech and people', 'Build ethical AI systems'].map((item, i) => (
-                    <li key={i} className="text-sm text-gray-500 flex items-start">
-                      <CheckCircle2 size={16} className="text-primary mr-2 shrink-0 mt-0.5" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-              <Button variant="outline" href="/contact">Book My Consultation</Button>
-              <div className="bg-primary text-white px-6 py-3 rounded-full shadow-xl inline-flex items-center gap-4">
-                <div className="text-2xl font-black font-orbitron">98%</div>
-                <div className="text-xs font-medium uppercase tracking-widest">Accuracy Rate</div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* Stats Section */}
-      <motion.section 
-        className="py-24 bg-gray-50"
-        initial={{ opacity: 0, scale: 0.95, y: 50 }}
-        whileInView={{ opacity: 1, scale: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-      >
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <StatCard 
-              number="150" symbol="+" 
-              title="Automated Workflows" 
-              description="From client acquisition to data analysis, all tailored to industry needs"
-            />
-            <StatCard 
-              number="10" symbol="K+" 
-              title="Tasks Deployed Daily" 
-              description="Smart systems managing conversations, lead gen, budgets, and more"
-            />
-            <StatCard 
-              number="98" symbol="%" 
-              title="Accuracy in AI Responses" 
-              description="Ensuring quality and consistency across every AI interaction"
-            />
-            <StatCard 
-              number="200" symbol="+" 
-              title="Global Clients" 
-              description="Trusted by brands, startups, and agencies worldwide"
-            />
+      <div className="relative z-0">
+        <MotionSection className="relative pt-40 pb-20 overflow-hidden text-white min-h-screen flex flex-col justify-center bg-transparent">
+          <Hero3DBackground />
+          <div className="max-w-4xl mx-auto px-6 text-center relative z-20 space-y-6">
+            <MotionItem elementType="h1" className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight">
+              Stay Ahead. Build Smarter. Scale Faster.
+            </MotionItem>
+            <MotionItem elementType="p" className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto">
+              You have a CEO. You have a CFO. You have a COO.<br />
+              But who’s leading your AI transformation?
+            </MotionItem>
+            <MotionItem className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+              <Button href="/get-started" variant="primary">Book My AI Consultation</Button>
+            </MotionItem>
           </div>
-        </div>
-      </motion.section>
+        </MotionSection>
 
-      {/* Competitive Edge Section */}
-      <motion.section 
-        className="py-24 bg-dark-classic/90 text-white"
-        initial={{ opacity: 0, scale: 0.95, y: 50 }}
-        whileInView={{ opacity: 1, scale: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-      >
-        <div className="max-w-4xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h4 className="text-3xl md:text-4xl font-black mb-12 text-center">Our Competitive Edge</h4>
-            
-            <div className="space-y-10">
-              {[
-                { label: 'Innovation Drive', value: 95 },
-                { label: 'Quality Assurance', value: 92 },
-                { label: 'Customer Satisfaction', value: 98 }
-              ].map((item, i) => (
-                <div key={i}>
-                  <div className="flex justify-between items-end mb-3">
-                    <h6 className="text-lg font-bold">{item.label}</h6>
-                    <span className="text-primary font-orbitron font-bold text-2xl">{item.value}%</span>
-                  </div>
-                  <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${item.value}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1.5, ease: "easeOut" }}
-                      className="h-full bg-primary"
-                    />
-                  </div>
-                </div>
-              ))}
+        <MotionSection className="py-24 bg-gray-50">
+          <div className="max-w-4xl mx-auto px-6 text-center">
+            <MotionItem elementType="h2" className="text-4xl md:text-5xl font-black mb-6">The AI Gap Is Growing</MotionItem>
+            <div className="space-y-4 text-gray-600 text-lg leading-relaxed">
+              <p>AI is transforming business faster than most businesses can adapt.</p>
+              <p>Businesses don’t know where to begin or how to use it strategically.</p>
+              <p>Without the right infrastructure and strategic guidance, growth slows and opportunities slip away.</p>
             </div>
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* Team Section */}
-      <motion.section 
-        className="py-24 bg-gray-50"
-        initial={{ opacity: 0, scale: 0.95, y: 50 }}
-        whileInView={{ opacity: 1, scale: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-      >
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
-            <div className="text-primary font-orbitron font-bold mb-4">Our Team</div>
-            <h2 className="text-4xl md:text-5xl font-black mb-4">Meet Our International <span className="heading-title-gradient">Foundation</span></h2>
           </div>
+        </MotionSection>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            <TeamCard name="John Bela" role="CEO" image="/john-bela.png" />
-            <TeamCard name="Peter" role="Digital Marketer" image="/peter.png" />
-            <TeamCard name="Kunmi Oduola" role="AI Developer" image="/kunmi-oduola.png" />
-            <TeamCard name="Rares Mateas" role="HOC" image="/rares-mateas.png" />
+        <MotionSection className="py-24 bg-white">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center max-w-4xl mx-auto mb-16">
+              <MotionItem elementType="h2" className="text-4xl md:text-5xl font-black mb-6">Your Chief AI Officer Small Business Solutions</MotionItem>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <TiltCard className="bg-white p-8 rounded-3xl shadow-xl border border-black/5">
+                <h3 className="text-xl font-bold mb-4 font-orbitron">Your Automated and Personalized AI Secretary</h3>
+                <p className="text-gray-600 mb-6">Your AI Secretary adapts to every layer of your business—from executive leadership to admin, HR, marketing, and frontline staff.</p>
+                <Button href="/services" variant="outline">Learn More</Button>
+              </TiltCard>
+              <TiltCard className="bg-white p-8 rounded-3xl shadow-xl border border-black/5">
+                <h3 className="text-xl font-bold mb-4 font-orbitron">Centralized Processes and Oversight, Designed to Enhance Conversions and</h3>
+                <p className="text-gray-600 mb-6">Transform your CRM into a performance engine—tracking lead behavior, automating follow-ups, and keeping every team aligned in real time. Projects move faster, campaigns stay on track, and results are always measurable.</p>
+              </TiltCard>
+              <TiltCard className="bg-white p-8 rounded-3xl shadow-xl border border-black/5">
+                <h3 className="text-xl font-bold mb-4 font-orbitron">Funnels Aligned With Your AI Campaign</h3>
+                <p className="text-gray-600 mb-6">Dynamic sales funnels built around your marketing strategy. Each step is A/B tested to create high-conversion paths that guide leads smoothly from start to finish.</p>
+                <Button href="/services" variant="outline">Discover What’s Included</Button>
+              </TiltCard>
+              <TiltCard className="bg-white p-8 rounded-3xl shadow-xl border border-black/5">
+                <h3 className="text-xl font-bold mb-4 font-orbitron">Email Automation Powered by AI Optimization</h3>
+                <p className="text-gray-600 mb-6">Your AI Secretary delivers email campaigns with persuasive copy, real-time behavior tracking, and hands-free execution to refine every send. Drive results by nurturing leads on autopilot while staying aligned with live campaigns.</p>
+                <Button href="/services" variant="outline">Explore the Solution</Button>
+              </TiltCard>
+              <TiltCard className="bg-white p-8 rounded-3xl shadow-xl border border-black/5">
+                <h3 className="text-xl font-bold mb-4 font-orbitron">Customize Your Paid Ads Campaigns</h3>
+                <p className="text-gray-600 mb-6">Grow your paid ads using integrated strategies that connect organic, affiliate, and email marketing into a unified retargeting framework. Predictive analytics protect your budget early, reducing waste and strengthening your advantage.</p>
+                <Button href="/services" variant="outline">See How It Works</Button>
+              </TiltCard>
+              <TiltCard className="bg-white p-8 rounded-3xl shadow-xl border border-black/5">
+                <h3 className="text-xl font-bold mb-4 font-orbitron">Organic Marketing That Builds Long-Term Trust</h3>
+                <p className="text-gray-600 mb-6">We help you grow through strategic organic content, affiliate partnerships, influencer sponsorships, and personalized outreach. Every move is guided by data—so your brand stays visible, trusted, and active across platforms like Instagram, LinkedIn, and beyond.</p>
+                <Button href="/services" variant="outline">Learn More</Button>
+              </TiltCard>
+              <TiltCard className="bg-white p-8 rounded-3xl shadow-xl border border-black/5">
+                <h3 className="text-xl font-bold mb-4 font-orbitron">Leads Into Booked Calls or Services</h3>
+                <p className="text-gray-600 mb-6">Whether it’s a cold or hot lead—text, email, or DM, we help you respond quickly and book faster. AI secretaries qualify leads and schedule discovery calls or paid services instantly—no ghosting, no delays. Every qualified message turns into a scheduled call or service.</p>
+                <Button href="/services" variant="outline">Explore the Solution</Button>
+              </TiltCard>
+              <TiltCard className="bg-white p-8 rounded-3xl shadow-xl border border-black/5">
+                <h3 className="text-xl font-bold mb-4 font-orbitron">End-to-End Website Development Systems</h3>
+                <p className="text-gray-600 mb-6">We build websites using predictive analytics, performance-driven AI, heat mapping, and complete SEO from day one. Launch a site that attracts stronger traffic, converts more leads, and fuels measurable growth.</p>
+              </TiltCard>
+              <TiltCard className="bg-white p-8 rounded-3xl shadow-xl border border-black/5">
+                <h3 className="text-xl font-bold mb-4 font-orbitron">Strategic SEO for Scalable Visibility</h3>
+                <p className="text-gray-600 mb-6">We focus on the 10% of SEO that drives 90% of your organic growth.<br/>Connect your website and content to the platforms that matter—Google, LinkedIn, Facebook, YouTube, and more. We make sure your content gets found, ranked, and clicked by the right people.</p>
+              </TiltCard>
+            </div>
           </div>
-        </div>
-      </motion.section>
+        </MotionSection>
 
-      {/* Benefits Section */}
-      <motion.section 
-        className="py-24 bg-white overflow-hidden"
-        initial={{ opacity: 0, scale: 0.95, y: 50 }}
-        whileInView={{ opacity: 1, scale: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-      >
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-1 gap-20 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-            >
-              <div className="text-primary font-orbitron font-bold mb-4">BENEFITS OF HIRING AN AI AGENCY</div>
-              <h2 className="text-4xl md:text-5xl font-black mb-8">Power Your business With <span className="heading-title-gradient">Intelligent Automation</span></h2>
-              <p className="text-gray-600 text-lg mb-12">Partnering with an AI agency like SB CAIO means unlocking smarter systems, faster decisions, and higher performance across every department.</p>
-              
-              <div className="space-y-10">
-                {[
-                  { id: '01', title: 'Accelerate Growth with Automation', desc: 'We eliminate repetitive manual tasks and replace them with streamlined, AI-driven workflows.' },
-                  { id: '02', title: 'Smarter, Data-Driven solutions', desc: 'Our advanced AI models analyze patterns, trends, and KPIs, empowering you to make high-impact choices.' },
-                  { id: '03', title: 'Scale Without Increasing Headcount', desc: 'Deploy bots that work round the clock. Our AI agents handle support, sales, booking, and more.' }
-                ].map((benefit) => (
-                  <div key={benefit.id} className="flex gap-6">
-                    <div className="text-4xl font-black font-orbitron text-gray-200 shrink-0">{benefit.id}</div>
-                    <div>
-                      <h4 className="text-xl font-bold mb-2">{benefit.title}</h4>
-                      <p className="text-gray-500">{benefit.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="mt-12 flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                <Button variant="outline" href="/contact">Book My Consultation</Button>
-                <div className="bg-primary px-6 py-4 rounded-3xl text-white shadow-xl flex items-center gap-4">
-                  <div className="text-2xl font-black font-orbitron">95%</div>
-                  <div className="text-xs uppercase tracking-widest">Efficiency Boost</div>
-                </div>
-                <div className="bg-dark-classic px-6 py-4 rounded-3xl text-white shadow-xl flex items-center gap-4">
-                  <div className="text-2xl font-black font-orbitron">24/7</div>
-                  <div className="text-xs uppercase tracking-widest">AI Support</div>
-                </div>
-              </div>
-            </motion.div>
+        <MotionSection className="py-24 bg-gray-50 border-y border-black/5">
+          <div className="max-w-7xl mx-auto px-6 text-center">
+            <MotionItem elementType="h2" className="text-4xl font-black mb-6">Tailored for Your Business. Structured for Results.</MotionItem>
+            <p className="text-gray-600 mb-16">Every AI plan is fully customizable — but here’s what we typically recommend based on where you are in your journey.</p>
+            <div className="grid md:grid-cols-3 gap-8 text-left">
+              <TiltCard className="bg-white p-8 rounded-3xl shadow-xl border border-black/5">
+                <p className="font-bold text-lg mb-4 text-primary">Start Small. Automate What Counts. See Real Results.</p>
+                <p className="text-gray-600 mb-6">Designed for founders and micro teams, this plan provides a dedicated Chief AI Officer (CAIO) and your own AI Secretary to streamline lead generation, rapid response, and funnel execution without the overhead.</p>
+                <p className="text-gray-600 mb-6">○ Save 2–4 hours per person every week  ○ Replace 1 full-time + 1 part-time employee</p>
+                <p className="text-gray-900 font-bold mb-6">Average Investment: $10K–$30K/year</p>
+              </TiltCard>
+              <TiltCard className="bg-white p-8 rounded-3xl shadow-xl border border-black/5">
+                <p className="font-bold text-lg mb-4 text-primary">For Teams Outgrowing Their Systems</p>
+                <p className="text-gray-600 mb-6">This is where structure eliminates stress.<br/>You’ll get end-to-end marketing engines, operational workflows, and people systems, designed to support you and your growth.<br/>Your Chief AI Officer constructs systems around your company’s evolving needs—aligning every moving part so nothing slows you down.</p>
+                <p className="text-gray-600 mb-6">○ Save 2–4 hours per person every week  ○ Replace up to 3 roles with a single system</p>
+                <p className="text-gray-900 font-bold mb-6">Average Investment: $30K–$60K/year</p>
+              </TiltCard>
+              <TiltCard className="bg-white p-8 rounded-3xl shadow-xl border border-black/5">
+                <p className="font-bold text-lg mb-4 text-primary">For Innovative Industry Leaders Focused on Staying Ahead of the Competition</p>
+                <p className="text-gray-600 mb-6">You’ve secured your position. Now it's time to leverage AI.<br/>Your CAIO delivers fully integrated AI systems with executive-level reporting tailored to each department head.<br/>Everything runs in sync—from unified data to coordinated cross-team execution.</p>
+                <p className="text-gray-600 mb-6">○ Save 40+ man hours a week across departments  ○ Replace 5+ roles with one centralized system</p>
+                <p className="text-gray-900 font-bold mb-6">Average Investment: $60K+/year</p>
+              </TiltCard>
+            </div>
+            <div className="mt-16 text-center">
+              <p className="text-xl font-bold mb-6">Get a Customized Plan for Your Business</p>
+              <Button href="/get-started" variant="primary">Book My AI Consultation</Button>
+            </div>
           </div>
-        </div>
-      </motion.section>
-      </DepthLayer>
+        </MotionSection>
+
+        <MotionSection className="py-24 bg-white">
+          <div className="max-w-4xl mx-auto px-6">
+            <MotionItem elementType="h2" className="text-4xl md:text-5xl font-black mb-16 text-center">FAQ's</MotionItem>
+            <div className="space-y-4">
+              <FAQItem question="1. What services will I receive with my plan?" answer="A: Services vary depending on your bottlenecks and growth needs analysis. Each plan is custom-built to solve the specific challenges holding your business back." />
+              <FAQItem question="2. Can your systems integrate with the tools I already use?" answer="A: Yes. We work with most platforms using APIs, Make, Zapier, or custom integrations. If a direct connection isn’t available, we’ll find a practical solution." />
+              <FAQItem question="3. Will I be left on my own after setup?" answer="A: No. Your Chief AI Officer is like a full-time employee (or five) — without the full-time costs. They're with you through setup, implementation, reporting, and ongoing optimization." />
+              <FAQItem question="4. How quickly can I get started?" answer="A: You can get started immediately. Before you even sign up with us, we conduct a growth assessment and define clear milestones, timeframes, and expected outcomes. Smaller systems may be fully launched in under 2 weeks, while full builds are rolled out in stages and typically completed within 30–90 days, depending on your needs." />
+              <FAQItem question="5. Do I have to learn coding?" answer="A: Not at all. You tell us what you want — we build and implement the systems for you. No tech experience needed." />
+              <FAQItem question="6. What kind of results should I expect — and when?" answer="A: Most businesses see time and cost savings within weeks. Full systems show measurable improvements in efficiency, leads, or sales within 30–90 days, depending on the plan." />
+              <FAQItem question="7. Do you work off commission?" answer="A: Yes. We’re open to creative financing models, including sweat equity or partial or full commission structures. We evaluate every project professionally, based on its scope, complexity, and potential value." />
+            </div>
+          </div>
+        </MotionSection>
+      </div>
     </div>
   );
 };

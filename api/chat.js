@@ -43,7 +43,7 @@ Use the following company knowledge when answering.
 
 ${context}
 
-If a user mentions an industry such as real estate, ecommerce, agency, home services, or brokerage, you should respond with tailored automation ideas.
+If a user mentions an industry such as real estate, ecommerce, agency, home services, or consulting, you should respond with tailored automation ideas.
 Use this format for your suggestions:
 
 Automation opportunities for your business:

@@ -27,12 +27,12 @@ export const companyKnowledge = [
   {
     topic: "Company Mission",
     keywords: ["mission", "goal", "purpose"],
-    content: "The mission of SBCAIO is to provide small and medium-sized businesses with advanced AI automation tools that were previously only available to large corporations. We help companies scale faster by automating operations, client acquisition, and internal workflows."
+    content: "The mission of SBCAIO is to provide small and medium-sized businesses with advanced AI automation tools that were previously only available to large corporations. We help companies scale faster by automating operations, business growth, and internal workflows."
   },
   {
     topic: "Scaling Businesses",
     keywords: ["scale", "grow", "scaling faster"],
-    content: "We help companies scale faster by automating their core operations, client acquisition processes, and internal workflows, allowing them to handle more volume without proportionally increasing their headcount."
+    content: "We help companies scale faster by automating their core operations, growth processes, and internal workflows, allowing them to handle more volume without proportionally increasing their headcount."
   },
   {
     topic: "Company Difference",
@@ -52,17 +52,17 @@ export const companyKnowledge = [
   {
     topic: "Industries Served",
     keywords: ["industries", "who do you work with", "sectors"],
-    content: "While we can work with many different industries, our main focus areas include Real Estate, Brokerages, Home Services, and Ecommerce."
+    content: "While we can work with many different industries, our main focus areas include Real Estate, Consulting, Home Services, and Ecommerce."
   },
   {
     topic: "Real Estate Industry",
     keywords: ["real estate", "realtors", "property"],
-    content: "For the Real Estate industry, we build automation systems that handle lead qualification, inbound inquiries, and automated follow-ups, helping agents close more deals faster."
+    content: "For the Real Estate industry, we build automation systems that handle lead qualification, inbound inquiries, and automated follow-ups, helping teams scale their output faster."
   },
   {
-    topic: "Brokerages",
-    keywords: ["brokerages", "brokers", "broker automation"],
-    content: "We help brokerages streamline their operations with custom CRM automations, automated client onboarding, and intelligent lead routing systems."
+    topic: "Consulting",
+    keywords: ["consulting", "consultants", "consulting automation"],
+    content: "We help consulting firms streamline their operations with custom CRM automations, automated client onboarding, and intelligent lead routing systems."
   },
   {
     topic: "Home Services",
@@ -190,9 +190,9 @@ export const companyKnowledge = [
     content: "We automate lead qualification, using AI to ask the right questions and determine which prospects are ready for your sales team."
   },
   {
-    topic: "Automated Process: Client Acquisition",
-    keywords: ["client acquisition", "getting clients", "sales systems"],
-    content: "We build end-to-end client acquisition systems that automate the journey from first touchpoint to booked appointment or sale."
+    topic: "Automated Process: Business Growth",
+    keywords: ["business growth", "scaling", "growth systems"],
+    content: "We build end-to-end business growth systems that automate the journey from first touchpoint to booked appointment or sale."
   },
   {
     topic: "Pricing Structure",
@@ -225,9 +225,9 @@ export const companyKnowledge = [
     content: "We don't just build and leave. SBCAIO provides ongoing support and continuous system optimization after implementation to ensure your automations adapt as your business grows."
   },
   {
-    topic: "Results: Customer Acquisition",
-    keywords: ["results", "customer acquisition", "more clients"],
-    content: "Businesses that implement SBCAIO automation systems often experience a significant increase in customer acquisition due to better lead capture and nurturing."
+    topic: "Results: Business Growth",
+    keywords: ["results", "business growth", "scaling up"],
+    content: "Businesses that implement SBCAIO automation systems often experience significant business growth due to better lead capture and nurturing."
   },
   {
     topic: "Results: Response Times",

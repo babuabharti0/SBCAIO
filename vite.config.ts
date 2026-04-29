@@ -14,7 +14,22 @@ export default defineConfig(({mode}) => {
       },
     },
     server: {
-      hmr: process.env.DISABLE_HMR !== 'true',
+      hmr: process.env.DISABLE_HMR === 'true' ? false : {
+        clientPort: 3000,
+        timeout: 10000,
+        overlay: false
+      },
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+            'three-vendor': ['three', '@react-three/fiber', '@react-three/drei'],
+            'motion-vendor': ['framer-motion', 'motion']
+          }
+        }
+      }
+    }
   };
 });

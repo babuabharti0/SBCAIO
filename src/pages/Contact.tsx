@@ -1,249 +1,218 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Phone, Mail, ChevronUp, ChevronDown, Users, Bookmark, MessageSquare, Lightbulb, CheckCircle2 } from 'lucide-react';
-import { AnimatedBackground } from '../components/AnimatedBackground';
-import { submitLead } from '../lib/leadService';
-import { DepthLayer } from '../components/Global3D';
+import { MotionSection, MotionItem } from '../components/Motion';
+import { Hero3DBackground } from '../components/Hero3DBackground';
 
-interface AccordionItemProps {
-  title: string;
-  children: React.ReactNode;
-  isOpen: boolean;
-  onClick: () => void;
-}
-
-const AccordionItem: React.FC<AccordionItemProps> = ({ title, children, isOpen, onClick }) => (
-  <div className="border-b border-black/10">
-    <button 
-      onClick={() => onClick()}
-      className="w-full py-6 flex items-center justify-between text-left group"
-    >
-      <span className={`text-lg font-bold transition-colors ${isOpen ? 'text-primary' : 'text-black group-hover:text-primary'}`}>
-        {title}
-      </span>
-      <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${isOpen ? 'bg-primary text-white' : 'bg-gray-100 text-black'}`}>
-        {isOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-      </div>
-    </button>
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div 
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: 'auto', opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
-          className="overflow-hidden"
-        >
-          <div className="pb-6 text-gray-600 leading-relaxed">
-            {children}
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  </div>
-);
+const WEBHOOK_URL = "https://sbcaio.app.n8n.cloud/webhook/3b59e432-05cf-47cb-b825-574dbb93dd55"
 
 export const Contact = () => {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    company: '',
-    industry: '',
-    teamSize: '',
-    automationGoal: ''
+    phone: '',
+    businessType: '',
+    message: '',
+    budget: '',
+    timeline: '',
+    honeypot: ''
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    const success = await submitLead({ ...formData, source: 'contact_form' });
-    setIsSubmitting(false);
-    if (success) {
-      setIsSuccess(true);
-      setFormData({
-        name: '',
-        email: '',
-        company: '',
-        industry: '',
-        teamSize: '',
-        automationGoal: ''
+    setError('');
+    setSuccess(false);
+
+    try {
+      const urlEncodedData = new URLSearchParams(formData as Record<string, string>).toString();
+
+      // Use no-cors and form-urlencoded to bypass browser CORS preflight blocks completely
+      // n8n webhook nodes automatically parse application/x-www-form-urlencoded payloads.
+      await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: urlEncodedData
       });
+
+      // In no-cors mode, we won't get a readable response. If fetch didn't throw an immediate network error, we assume it was dispatched.
+      setSuccess(true);
+    } catch (err) {
+      console.error(err);
+      setError('Something went wrong. Try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
   return (
-    <DepthLayer depth={0} interactive={true}>
-      {/* Page Title Section */}
-      <section className="pt-40 pb-20 bg-dark-classic text-white relative overflow-hidden" style={{ transformStyle: 'preserve-3d' }}>
-        <DepthLayer depth={-200} className="absolute inset-[-10%] w-[120%] h-[120%] z-0">
-          <AnimatedBackground />
-        </DepthLayer>
-        <div className="max-w-7xl mx-auto px-6 relative z-10" style={{ transform: 'translateZ(40px)' }}>
-          <h1 className="text-5xl md:text-7xl font-black mb-6 font-orbitron">Contact Us.</h1>
-          <div className="flex items-center space-x-4 text-sm font-medium uppercase tracking-widest text-gray-400">
-            <a href="/" className="hover:text-primary transition-colors">Home</a>
-            <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
-            <span className="text-white">Contact Us</span>
-          </div>
-        </div>
-      </section>
+    <div className="relative bg-black min-h-screen">
+      <MotionSection className="relative min-h-[60vh] flex items-center justify-center text-white overflow-hidden pt-32 pb-24">
+        <Hero3DBackground />
+        
+        <div className="relative z-10 w-full max-w-xl mx-auto px-6">
+          <MotionItem className="text-center mb-10">
+            <h1 className="text-3xl md:text-4xl font-black mb-4">Start Your AI Transformation</h1>
+            <p className="text-gray-400 text-lg">
+              Tell us about your business and what you want to achieve. We’ll respond with a tailored plan.
+            </p>
+          </MotionItem>
 
-      {/* Main Contact Section */}
-      <section className="py-24 bg-white">
-        <div className="max-w-3xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <div className="text-center mb-12">
-              <div className="text-primary font-orbitron font-bold mb-4 uppercase tracking-widest">Let's Talk</div>
-              <h2 className="text-4xl md:text-5xl font-black mb-6">Start the Conversation with Our <span className="heading-title-gradient">Team Today.</span></h2>
-              <p className="text-gray-600 text-lg">Have a question or a project in mind? Our team is ready to explore ideas, solve challenges, and build smart solutions with you.</p>
-            </div>
+          <MotionItem className="bg-[#111] border border-white/10 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-3xl rounded-full opacity-50 pointer-events-none" />
             
-            <div className="grid sm:grid-cols-2 gap-6 mb-12">
-              <a href="tel:+17253046728" className="flex items-center p-6 rounded-2xl bg-gray-50 hover:bg-primary hover:text-white transition-all group">
-                <div className="w-12 h-12 rounded-xl bg-white shadow-sm flex items-center justify-center text-primary mr-4 group-hover:bg-white/20 group-hover:text-white transition-all">
-                  <Phone size={24} />
+            {success ? (
+              <div className="relative z-10 text-center py-10 space-y-4">
+                <div className="w-16 h-16 bg-primary/20 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
                 </div>
-                <div>
-                  <div className="text-xs uppercase tracking-widest opacity-60 mb-1">Phone</div>
-                  <div className="font-bold">725-304-6728</div>
+                <h3 className="text-2xl font-bold text-white">Thank You</h3>
+                <p className="text-gray-400">
+                  Request sent successfully. We'll contact you shortly.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="relative z-10 flex flex-col gap-6">
+                
+                {/* HONEYPOT - HIDDEN FROM USERS */}
+                <div className="hidden" aria-hidden="true">
+                  <input type="text" name="honeypot" tabIndex={-1} value={formData.honeypot} onChange={handleChange} autoComplete="off" />
                 </div>
-              </a>
-              <a href="mailto:ceo@sbcaio.com" className="flex items-center p-6 rounded-2xl bg-gray-50 hover:bg-primary hover:text-white transition-all group">
-                <div className="w-12 h-12 rounded-xl bg-white shadow-sm flex items-center justify-center text-primary mr-4 group-hover:bg-white/20 group-hover:text-white transition-all">
-                  <Mail size={24} />
-                </div>
-                <div>
-                  <div className="text-xs uppercase tracking-widest opacity-60 mb-1">Email</div>
-                  <div className="font-bold">ceo@sbcaio.com</div>
-                </div>
-              </a>
-            </div>
 
-            <div className="bg-gray-50 p-8 rounded-3xl shadow-sm border border-black/5">
-              <h3 className="text-2xl font-bold mb-6 font-orbitron">Request an Automation Plan</h3>
-              {isSuccess ? (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-green-50 text-green-800 p-6 rounded-2xl flex items-start"
-                >
-                  <CheckCircle2 className="w-6 h-6 mr-3 flex-shrink-0 mt-0.5" />
-                  <p className="font-medium">Thanks! Our team will review your automation opportunities and contact you shortly.</p>
-                </motion.div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                      <input required type="text" name="name" value={formData.name} onChange={handleChange} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="John Doe" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                      <input required type="email" name="email" value={formData.email} onChange={handleChange} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="john@example.com" />
-                    </div>
+                {error && (
+                  <div className="bg-red-500/20 border border-red-500 text-red-300 p-4 rounded-lg text-sm text-center">
+                    {error}
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
-                      <input required type="text" name="company" value={formData.company} onChange={handleChange} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="Acme Corp" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Industry</label>
-                      <input required type="text" name="industry" value={formData.industry} onChange={handleChange} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="E-commerce" />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Team Size</label>
-                    <input required type="text" name="teamSize" value={formData.teamSize} onChange={handleChange} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="e.g. 1-10, 11-50" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Automation Goal</label>
-                    <textarea required name="automationGoal" value={formData.automationGoal} onChange={handleChange} rows={4} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none" placeholder="What process would you like to automate?"></textarea>
-                  </div>
-                  <motion.button 
-                    type="submit" 
-                    disabled={isSubmitting}
-                    className="btn-premium primary w-full py-4 bg-primary text-white rounded-xl font-bold flex justify-center items-center disabled:opacity-70 shadow-[0_0_15px_rgba(0,255,0,0.3)] hover:shadow-[0_0_25px_rgba(0,255,0,0.6)] transition-all duration-300"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                )}
+
+              <div>
+                <label htmlFor="name" className="block text-sm font-bold text-gray-300 mb-2">Full Name *</label>
+                <input 
+                  type="text" 
+                  id="name" 
+                  name="name" 
+                  required 
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full bg-black/50 border border-white/10 rounded-md px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-primary transition-colors"
+                  placeholder="John Doe"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="email" className="block text-sm font-bold text-gray-300 mb-2">Email Address *</label>
+                  <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    required 
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full bg-black/50 border border-white/10 rounded-md px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-primary transition-colors"
+                    placeholder="john@example.com"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-bold text-gray-300 mb-2">Phone Number *</label>
+                  <input 
+                    type="tel" 
+                    id="phone" 
+                    name="phone" 
+                    required 
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="w-full bg-black/50 border border-white/10 rounded-md px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-primary transition-colors"
+                    placeholder="(555) 123-4567"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="businessType" className="block text-sm font-bold text-gray-300 mb-2">Business Type</label>
+                <input 
+                  type="text" 
+                  id="businessType" 
+                  name="businessType" 
+                  value={formData.businessType}
+                  onChange={handleChange}
+                  className="w-full bg-black/50 border border-white/10 rounded-md px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-primary transition-colors"
+                  placeholder="E-commerce, Agency, Local Service, etc."
+                />
+              </div>
+
+              <div>
+                <label htmlFor="message" className="block text-sm font-bold text-gray-300 mb-2">What do you need help with? *</label>
+                <textarea 
+                  id="message" 
+                  name="message" 
+                  required 
+                  rows={4}
+                  value={formData.message}
+                  onChange={handleChange}
+                  className="w-full bg-black/50 border border-white/10 rounded-md px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-primary transition-colors resize-none"
+                  placeholder="Describe your bottlenecks and goals..."
+                ></textarea>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="budget" className="block text-sm font-bold text-gray-300 mb-2">Budget Range</label>
+                  <select 
+                    id="budget" 
+                    name="budget"
+                    value={formData.budget}
+                    onChange={handleChange}
+                    className="w-full bg-black/50 border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
                   >
-                    {isSubmitting ? 'Submitting...' : 'Get My Free Automation Plan'}
-                  </motion.button>
-                </form>
-              )}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Help & Support Section */}
-      <section className="py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <div className="text-primary font-orbitron font-bold mb-4 uppercase tracking-widest">Help & Support</div>
-            <h2 className="text-4xl md:text-5xl font-black mb-8">Get the Assistance <span className="heading-title-gradient">You Need.</span></h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { icon: <Users size={32} />, title: 'Community Forum', desc: 'Connect, share insights, and get help from fellow users and Thinkapt experts.' },
-              { icon: <Bookmark size={32} />, title: 'Tutorials', desc: 'Step-by-step guides to help you master Thinkapt’s tools and techniques with ease.' },
-              { icon: <MessageSquare size={32} />, title: 'Live Chat', desc: 'Instantly connect with our support team for real-time assistance.' },
-              { icon: <Lightbulb size={32} />, title: 'Knowledge Base', desc: 'Access a comprehensive library of articles, guides, and FAQs.' }
-            ].map((item, i) => (
-              <a key={i} href="#" className="p-8 rounded-3xl bg-white shadow-lg border border-black/5 hover:border-primary/20 transition-all group">
-                <div className="w-16 h-16 mb-6 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                  {item.icon}
+                    <option value="" className="bg-[#111] text-gray-400">Select an option</option>
+                    <option value="Under $5k" className="bg-[#111]">Under $5k</option>
+                    <option value="$5k - $10k" className="bg-[#111]">$5k - $10k</option>
+                    <option value="$10k - $30k" className="bg-[#111]">$10k - $30k</option>
+                    <option value="$30k+" className="bg-[#111]">$30k+</option>
+                  </select>
                 </div>
-                <h4 className="text-xl font-bold mb-4 font-orbitron">{item.title}</h4>
-                <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
+                <div>
+                  <label htmlFor="timeline" className="block text-sm font-bold text-gray-300 mb-2">Timeline</label>
+                  <select 
+                    id="timeline" 
+                    name="timeline"
+                    value={formData.timeline}
+                    onChange={handleChange}
+                    className="w-full bg-black/50 border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
+                  >
+                    <option value="" className="bg-[#111] text-gray-400">Select an option</option>
+                    <option value="ASAP" className="bg-[#111]">ASAP</option>
+                    <option value="Within 1 month" className="bg-[#111]">Within 1 month</option>
+                    <option value="1-3 months" className="bg-[#111]">1-3 months</option>
+                    <option value="Just exploring" className="bg-[#111]">Just exploring</option>
+                  </select>
+                </div>
+              </div>
 
-      {/* FAQ Section */}
-      <section className="py-24 bg-white relative overflow-hidden">
-        <div className="max-w-4xl mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
-            <div className="text-primary font-orbitron font-bold mb-4 uppercase tracking-widest">Common Questions</div>
-            <h2 className="text-4xl md:text-5xl font-black mb-6">Answer to Your <span className="heading-title-gradient">Common Questions.</span></h2>
-            <p className="text-gray-600">Curious about AI prompt engineering and how Thinkapt can help? Here are key questions to understand our services.</p>
-          </div>
-
-          <div className="bg-gray-50 rounded-3xl p-8 md:p-12 shadow-xl">
-            {[
-              { q: "What types of prompts do you help create?", a: "We specialize in designing prompts for various AI models, including language generation, code completion, chatbots, and data analysis tools to improve accuracy and relevance." },
-              { q: "How can prompt engineering improve AI performance?", a: "By carefully crafting prompts, we ensure AI understands context better, reduces errors, and produces more useful, targeted responses tailored to your specific needs." },
-              { q: "Can Thinkapt make prompts that fit my industry?", a: "Totally! Whether you're in healthcare, finance, retail, or something else, we customize prompts to match your needs. It helps your AI respond more accurately." },
-              { q: "How do you test and refine prompts?", a: "Our team uses iterative testing with real AI systems, analyzing output quality and making adjustments until the prompt yields consistent, reliable results." },
-              { q: "Is prompt engineering suitable for all AI platforms?", a: "Yes, we work with a wide range of AI models, including OpenAI’s GPT, Google’s BERT, and other NLP and machine learning frameworks." },
-              { q: "How long does it take to develop effective prompts?", a: "Depending on complexity, initial prompt drafts can be ready within days, with ongoing refinements over weeks to optimize performance." },
-              { q: "How can I get started with Thinkapt?", a: "Simply reach out via our website or contact form. We’ll discuss your goals and create a customized plan for your AI prompt needs." }
-            ].map((faq, idx) => (
-              <AccordionItem 
-                key={idx} 
-                title={faq.q} 
-                isOpen={openFaq === idx} 
-                onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className="w-full mt-4 bg-primary text-black font-bold py-4 rounded-md transition-all hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_15px_rgba(0,255,0,0.15)] hover:shadow-[0_0_25px_rgba(0,255,0,0.4)]"
               >
-                {faq.a}
-              </AccordionItem>
-            ))}
-          </div>
+                {isSubmitting ? 'Submitting...' : 'Request Consultation'}
+              </button>
+            </form>
+            )}
+          </MotionItem>
         </div>
-      </section>
-    </DepthLayer>
+      </MotionSection>
+    </div>
   );
 };

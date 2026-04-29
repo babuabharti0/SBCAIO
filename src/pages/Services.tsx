@@ -1,199 +1,155 @@
 import React from 'react';
-import { motion } from 'motion/react';
-import { ArrowRight } from 'lucide-react';
-import { AnimatedBackground } from '../components/AnimatedBackground';
-import { DepthLayer } from '../components/Global3D';
-
-const ServiceCard = ({ title, description }: { title: string; description: string }) => (
-  <motion.div 
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    style={{ transformStyle: "preserve-3d", transform: 'translateZ(70px)' }}
-    className="relative p-8 rounded-3xl bg-[#0a0a0a] text-white shadow-xl border border-white/10 hover:border-primary/50 hover:shadow-[0_12px_40px_-10px_rgba(0,255,0,0.3)] transition-colors duration-500 group overflow-hidden cursor-pointer"
-  >
-    {/* Subtle animated background gradient on hover */}
-    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" style={{ transform: 'translateZ(-10px)' }} />
-    
-    <div className="relative z-10" style={{ transform: 'translateZ(30px)' }}>
-      <h4 className="text-xl font-bold mb-4 font-orbitron group-hover:text-primary transition-colors duration-300">{title}</h4>
-      <p className="text-gray-400 leading-relaxed">{description}</p>
-    </div>
-  </motion.div>
-);
-
-const IndustryCard = ({ title, description }: { title: string; description: string }) => (
-  <motion.div 
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    style={{ transformStyle: "preserve-3d", transform: 'translateZ(70px)' }}
-    className="relative rounded-[32px] overflow-hidden group bg-white shadow-xl border border-black/5 hover:shadow-[0_12px_40px_-10px_rgba(0,255,0,0.2)] transition-shadow duration-500"
-  >
-    <div className="p-8 relative" style={{ transform: 'translateZ(40px)' }}>
-      <h5 className="text-xl font-bold mb-4 mt-6 font-orbitron">{title}</h5>
-      <p className="text-gray-500 text-sm leading-relaxed mb-6">{description}</p>
-      <a href="/contact" className="inline-flex items-center text-primary font-bold text-sm uppercase tracking-widest hover:translate-x-2 transition-transform">
-        Explore More <ArrowRight size={16} className="ml-2" />
-      </a>
-    </div>
-  </motion.div>
-);
-
-const Button = ({ children, variant = 'primary', className = '', href = '#' }: { children: React.ReactNode; variant?: 'primary' | 'outline'; className?: string; href?: string }) => {
-  const baseStyles = "btn-premium inline-flex items-center justify-center px-8 py-3 rounded-full font-orbitron text-sm font-bold transition-all duration-300";
-  const variants = {
-    primary: "primary bg-primary text-white shadow-[0_0_15px_rgba(0,255,0,0.3)] hover:shadow-[0_0_25px_rgba(0,255,0,0.6)]",
-    outline: "outline border-2 border-primary text-primary hover:bg-primary hover:text-white hover:shadow-[0_0_20px_rgba(0,255,0,0.5)]"
-  };
-  
-  return (
-    <motion.a 
-      href={href} 
-      className={`${baseStyles} ${variants[variant]} ${className}`}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-    >
-      {children}
-    </motion.a>
-  );
-};
+import { Target, Network, FileText, Database, BarChart, UserPlus, TrendingUp, Globe, Bot } from 'lucide-react';
+import { MotionSection, MotionItem, TiltCard } from '../components/Motion';
+import { Hero3DBackground } from '../components/Hero3DBackground';
+import { Button } from '../components/Button';
 
 export const Services = () => {
   return (
-    <DepthLayer depth={0} interactive={true}>
-      {/* Page Title Section */}
-      <section className="relative min-h-[60vh] flex items-center justify-center bg-dark-classic text-white overflow-hidden" style={{ transformStyle: 'preserve-3d' }}>
-        <DepthLayer depth={-200} className="absolute inset-[-10%] w-[120%] h-[120%] z-0 pointer-events-none">
-          <AnimatedBackground />
-        </DepthLayer>
-        <div className="relative z-10 max-w-7xl mx-auto px-6 text-center w-full" style={{ transform: 'translateZ(40px)' }}>
-          <h1 className="text-5xl md:text-7xl font-black mb-6 font-orbitron">Our Services.</h1>
-          <div className="flex items-center justify-center space-x-4 text-sm font-medium uppercase tracking-widest text-gray-400">
-            <a href="/" className="hover:text-primary transition-colors">Home</a>
-            <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
-            <span className="text-white">Our Services</span>
-          </div>
+    <div className="relative bg-black text-white">
+      <MotionSection className="relative min-h-[60vh] flex flex-col items-center justify-center overflow-hidden pt-32 pb-20">
+        <Hero3DBackground />
+        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+          <MotionItem elementType="h1" className="text-4xl md:text-5xl lg:text-6xl font-black mb-6">
+            C AI O Infrastructure. Data-Led Initiatives. Built for Serious Businesses.
+          </MotionItem>
+          <MotionItem elementType="h2" className="text-2xl md:text-3xl text-primary font-bold mb-8">
+            Built to Save Time, Reduce Costs, and Deliver Results Where It Matters Most.
+          </MotionItem>
+          <MotionItem elementType="p" className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-4xl mx-auto">
+            For solopreneurs and teams of five or fewer, our systems match the output of a full-time hire without the cost—saving you hours and tens of thousands a year, while optimizing core operations. For teams of ten or more, ROI is immediate, with time savings showing up before any additional services even begin.
+          </MotionItem>
         </div>
-      </section>
+      </MotionSection>
 
-      {/* Competitive Edge Section */}
-      <section className="py-24 bg-dark-classic text-white">
-        <div className="max-w-4xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h4 className="text-3xl md:text-4xl font-black mb-12 text-center">Our Competitive Edge</h4>
-            
-            <div className="space-y-10">
-              {[
-                { label: 'Innovation Drive', value: 95 },
-                { label: 'Quality Assurance', value: 92 },
-                { label: 'Customer Satisfaction', value: 98 }
-              ].map((item, i) => (
-                <div key={i}>
-                  <div className="flex justify-between items-end mb-3">
-                    <h6 className="text-lg font-bold">{item.label}</h6>
-                    <span className="text-primary font-orbitron font-bold text-2xl">{item.value}%</span>
-                  </div>
-                  <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${item.value}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1.5, ease: "easeOut" }}
-                      className="h-full bg-primary"
-                    />
-                  </div>
+      <MotionSection className="py-24 bg-dark-classic">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center max-w-4xl mx-auto mb-20">
+            <MotionItem elementType="p" className="text-2xl text-gray-300 font-bold">
+              Build smarter systems that replace manual processes, reduce inefficiencies, and create scalable, measurable infrastructure across your business.
+            </MotionItem>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-12">
+            <div className="space-y-12">
+              <div>
+                <h3 className="text-2xl font-bold mb-4 font-orbitron text-primary">Your Automated and Personalized AI Secretary</h3>
+                <p className="text-gray-400 mb-4">Your AI Secretary supports every layer of your business—from leadership to admin, HR, and frontline staff.</p>
+                <div className="space-y-4 text-gray-400 pl-4 border-l-2 border-primary/20">
+                  <p>It automates repetitive tasks, connects your tools, and reduces overhead.</p>
+                  <p>Sales support, lead booking, reminders, and marketing sync all run on autopilot.</p>
+                  <p>HR operations like hiring workflows, onboarding, and training are streamlined to ramp up your team faster.</p>
                 </div>
-              ))}
+                <p className="text-gray-400 mt-4">Real-time AI-guided scripts boost sales team performance, while every action is tracked with live KPIs. That means smarter decisions, instant visibility into what’s working, and continuous optimization.</p>
+              </div>
+
+              <div>
+                <p className="text-2xl font-bold mb-4 font-orbitron text-primary">Your CRM should do more than hold data — it should power conversions, align your team, and drive performance in real time.</p>
+                <div className="space-y-4 text-gray-400">
+                  <p>Assign clear ownership across tasks, deals, and communications — reducing missed follow-ups and accountability gaps.</p>
+                  <p>Monitor every stage of your pipeline with real-time updates on lead behavior, client activity, and internal execution.</p>
+                  <p>Works with Salesforce, HubSpot, GoHighLevel, Apollo, Outreach, and more — with workflows tailored to your team’s structure and goals.</p>
+                  <p>Live dashboards track the metrics that matter, so you act on data—not assumptions.</p>
+                  <p>Includes CRM setup, custom workflows, pipeline tracking, and fully integrated reporting.</p>
+                  <p>The result? Faster follow-through, cleaner handoffs, and sharper decision-making—unlocking hours of productivity and thousands in recovered revenue.</p>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-2xl font-bold mb-4 font-orbitron text-primary">Connect to your clients with high quality lead magnets, and nurture your leads in every stage of your buyer’s journey with synchronized messaging, that enhances buyer experience, and delivers measurable progress.</p>
+              </div>
+
+              <div>
+                <h3 className="text-2xl font-bold mb-4 font-orbitron text-primary">Omnichannel Funnels with Smart Lead Magnets Built to Convert<br/>Omnichannel Funnels Built to Convert</h3>
+                <div className="space-y-4 text-gray-400">
+                  <p>We connect your organic, paid, affiliate, content, and outreach strategies into one AI-optimized funnel that qualifies, nurtures, and converts.</p>
+                  <p>Lead magnets like surveys, quizzes, and assessments capture buyer intent and segment leads instantly.</p>
+                  <p>AI tracks engagement across every step—so no clicks are wasted and every next action is intentional.</p>
+                  <p>Real-time insights and A/B-tested data help you refine what works and scale what performs.</p>
+                  <p>Small teams move faster. Large teams stay aligned.</p>
+                  <p>You get a complete conversion system designed to grow with your business—from first click to closed deal.</p>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-2xl font-bold mb-4 font-orbitron text-primary">Your campaigns should do more than deliver — they should convert, retarget, and refine every step of the buyer journey.</p>
+                <div className="space-y-4 text-gray-400">
+                  <p>AI-enhanced segmentation personalizes each message based on behavior, intent, and funnel stage.</p>
+                  <p>Campaigns adapt in real time — keeping content relevant, timing sharp, and follow-ups automatic.</p>
+                  <p>Multi-channel outreach aligns with client profiles to maintain consistent, high-quality communication.</p>
+                  <p>Every send is backed by data — optimized for engagement, retention, and ROI across your entire funnel.</p>
+                  <p>The result? Higher open rates, better follow-through, and stronger conversions — all on autopilot.</p>
+                </div>
+              </div>
             </div>
-          </motion.div>
-        </div>
-      </section>
 
-      {/* Main Services Grid */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <div className="text-primary font-orbitron font-bold mb-4 uppercase tracking-widest">SBCAIO SERVICES</div>
-            <h2 className="text-4xl md:text-5xl font-black mb-8">Unlock Business Efficiency With AI <span className="heading-title-gradient">Powered Automation</span></h2>
-            <p className="text-gray-600 text-lg">We help businesses tap into the real power of artificial intelligence — not just with tools, but with smart systems designed to streamline processes, boost output, and personalize customer journeys.</p>
-          </div>
+            <div className="space-y-12">
+              <div>
+                <p className="text-2xl font-bold mb-4 font-orbitron text-primary">We use predictive analytics before you spend a single dollar so you see a return on ROI before you even start testing.</p>
+                <div className="space-y-4 text-gray-400">
+                  <p>Each paid ad and every creative is based on forecasting, real-time insights, and effective budgeting.</p>
+                  <p>So we can predict your ROI before launch and improve it continuously through optimization and data-backed campaign execution.</p>
+                  <p>Campaigns are connected directly to your funnel, CRM, and retargeting flows to stay fully aligned across your strategy.</p>
+                  <p>We help your ad strategy target high-intent audiences, refine creative in real time, providing consistent and ever improving ROI.</p>
+                </div>
+              </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <ServiceCard 
-              title="AI Model Development"
-              description="We create context-aware, industry-specific AI models tailored to your business use case. Precision meets performance."
-            />
-            <ServiceCard 
-              title="Data Analysis & KPI Intelligence"
-              description="Turn data into insights. Our systems analyze trends, patterns, and KPIs that drive smarter decisions and higher ROI."
-            />
-            <ServiceCard 
-              title="Client Acquisition Automation"
-              description="Reach your ideal customers with hyper-targeted messaging via WhatsApp, Gmail, LinkedIn, or Telegram — powered by AI segmentation."
-            />
-            <ServiceCard 
-              title="Marketing and Sales Support"
-              description="Dynamic sales funnels built around your marketing strategy. Each step is A/B tested to create high-conversion paths."
-            />
-            <ServiceCard 
-              title="SEO & Website Creation"
-              description="From smart landing pages to SEO-optimized websites, we build everything needed to generate and convert traffic — in one click."
-            />
-            <ServiceCard 
-              title="AI Chatbots & Call Centers"
-              description="24/7 AI-powered support agents for WhatsApp, Instagram, calls, and more — customized to act just like you."
-            />
-          </div>
-        </div>
-      </section>
+              <div>
+                <p className="text-2xl font-bold mb-4 font-orbitron text-primary">Position your social media around clear goals—whether that’s building awareness, driving conversions, or leading your category.</p>
+                <div className="space-y-4 text-gray-400">
+                  <p>You'll get long-term visibility, controlled messaging, and lead flow that isn’t tied to ad budgets. We build the infrastructure behind it—so content creation, outreach, and engagement are structured, repeatable, and tied to business outcomes.</p>
+                  <p>Your organic, affiliate, and sponsorship strategies are mapped to platforms where your audience already pays attention—LinkedIn, Instagram, YouTube, and others—so every post, DM, and asset drives your business forward.</p>
+                  <p>The result: qualified inbound leads, clear brand positioning, and a marketing process that builds equity over time.</p>
+                </div>
+              </div>
 
-      {/* Industry Expertise Section */}
-      <section className="py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <div className="text-primary font-orbitron font-bold mb-4 uppercase tracking-widest">Our industry expertise</div>
-            <h2 className="text-4xl md:text-5xl font-black mb-8">Powering Innovation <span className="heading-title-gradient">Across Industries.</span></h2>
-            <p className="text-gray-600 text-lg">We specialize in delivering AI prompt solutions across diverse industries, combining domain knowledge with advanced prompt engineering for impactful.</p>
-          </div>
+              <div>
+                <h3 className="text-2xl font-bold mb-4 font-orbitron text-primary">Stop Losing Qualified Leads. While You Focus on the Work That Matters</h3>
+                <div className="space-y-4 text-gray-400">
+                  <p>You got your lead funnels in place, and You’re booked 80–90% of the time—and missing 1 in 8 leads because there’s no way to answer every call or reply within 30 seconds.</p>
+                  <p>Whether you're booking a service or a discovery call, our booking agents are trained on your FAQs and use your messaging to guide qualified prospects to a meeting—and follow up with reminders. Behavior-based forms qualify in real time, while a Voice Agent responds instantly through voice, chat, or SMS.</p>
+                  <p>Includes branded funnels, Voice Agent setup, and full calendar integration.</p>
+                  <p>The result: no missed leads, stronger bookings, and zero manual follow-up.</p>
+                </div>
+              </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <IndustryCard 
-              title="Healthcare"
-              description="Enhancing patient engagement and diagnostics through empathetic, precise prompt flows."
-            />
-            <IndustryCard 
-              title="Local services"
-              description="Delivering secure and compliant AI interactions for banking, insurance, and fintech platforms."
-            />
-            <IndustryCard 
-              title="Home Services"
-              description="Designing adaptive prompt systems that support personalized and interactive learning experiences."
-            />
-            <IndustryCard 
-              title="E-Commerce"
-              description="Optimizing product discovery, virtual shopping assistants, and customer support automation."
-            />
-            <IndustryCard 
-              title="Professional Services"
-              description="Structuring AI prompts to streamline case analysis, document review, and legal research assistance."
-            />
-            <IndustryCard 
-              title="Education"
-              description="Empowering smarter property search, virtual agent chats, and investment recommendation tools."
-            />
-          </div>
+              <div>
+                <p className="text-2xl font-bold mb-4 font-orbitron text-primary">Develop a performance-ready online presence through intelligent design, behavioral analytics, and search visibility.</p>
+              </div>
 
-          <div className="mt-20 text-center">
-            <h5 className="text-2xl font-bold mb-8 font-orbitron">Unlock AI for Your Industry</h5>
-            <Button href="/contact">Contact Us</Button>
+              <div>
+                <p className="text-2xl font-bold mb-4 font-orbitron text-primary">Predictive heat mapping guided by buyer behavior indicators, buyer intent, SEO strategy, and A/B conversion optimization.</p>
+                <div className="space-y-4 text-gray-400">
+                  <p>Get a website designed to convert, using heat mapping combined with design, structure, and functionality to create a fast, buyer-friendly experience that turns interest into conversions.</p>
+                  <p>Build a site with persuasive copy and strategic visuals that guide buyers through every step of their decision. The design, messaging, and layout work in harmony to build trust, reduce friction, and turn interest into action.</p>
+                  <p>Develop an SEO strategy that drives visibility based on your business goals.</p>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-2xl font-bold mb-4 font-orbitron text-primary">We target the critical 10% of SEO strategies that generate 90% of your results—so your website and content get seen, ranked, and clicked by the right people.</p>
+                <div className="space-y-4 text-gray-400">
+                  <p>Connect your website and content to the platforms that matter—Google, LinkedIn, Facebook, YouTube, and more. We make sure your content gets found, ranked, and clicked by the right people.</p>
+                  <p>Based on your goals, audience, and model, we build an SEO strategy that brings your target audience to you.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
-    </DepthLayer>
+      </MotionSection>
+
+      <MotionSection className="py-24 bg-gray-900">
+        <div className="max-w-4xl mx-auto px-6 text-center space-y-8">
+          <p className="text-2xl font-bold text-white">A unified strategy led by your Small Business Chief AI Officer—built to simplify operations, accelerate growth, and scale with precision.</p>
+          <div className="text-lg text-gray-400 space-y-4">
+            <p>We connect marketing, delivery, and client service into one cohesive structure—reducing friction, increasing visibility, and giving you more control throughout your business.</p>
+            <p>Your Small Business Chief AI Officer provides more than just automated support—we design scalable frameworks that evolve with your goals. From lean teams to expanding companies, every solution is tailored to fit your structure, budget, and long-term trajectory without added complexity or overhead.</p>
+            <p className="mt-8 font-bold text-white">Gain full team support at a fraction of traditional staffing costs—while reclaiming time through AI-driven systems. The ROI is immediate. In many cases, it’s like receiving enterprise-level marketing and operations support without added expense.</p>
+          </div>
+          <p className="text-xl font-bold text-primary pt-8">Find out how we can simplify your processes. Book your consultation today.</p>
+          <Button href="/get-started" variant="primary">Book My AI Consultation</Button>
+        </div>
+      </MotionSection>
+    </div>
   );
 };
