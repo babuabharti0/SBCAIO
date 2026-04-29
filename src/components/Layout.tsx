@@ -50,7 +50,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-black/80 backdrop-blur-md shadow-md py-3' : 'bg-black/40 backdrop-blur-sm py-6'}`}>
         <div className="max-w-7xl mx-auto px-6 flex flex-wrap items-center justify-between">
           <Link to="/" className="flex items-center text-primary">
-            <img src="/logo.png" alt="SBCAIO Logo" className="h-8 md:h-10 w-auto" />
+            <img src="/logo.png" alt="SBCAIO Logo" className="h-16 md:h-20 w-auto object-contain" />
           </Link>
           <nav className="hidden md:flex items-center space-x-10">
             <NavItem to="/">
