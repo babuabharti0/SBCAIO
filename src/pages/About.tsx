@@ -1,10 +1,15 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { MotionSection, MotionItem, TiltCard } from '../components/Motion';
 import { Hero3DBackground } from '../components/Hero3DBackground';
 
 export const About = () => {
   return (
     <div className="relative bg-black text-white min-h-screen">
+      <Helmet>
+        <title>About Us - SBCAIO</title>
+        <meta name="description" content="Discover our mission to make the Chief AI Officer role accessible to small businesses." />
+      </Helmet>
       <Hero3DBackground />
       <MotionSection className="relative z-10 pt-40 pb-24 max-w-6xl mx-auto px-6 space-y-20">
         

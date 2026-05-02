@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Menu, X, ArrowUp, Home, Info, Briefcase, FolderGit2, Mail } from 'lucide-react';
 import { Button } from './Button';
@@ -7,7 +8,7 @@ import { MotionIcon } from './MotionIcon';
 
 const NavItem = ({ to, children }: { to: string; children: React.ReactNode }) => {
   const location = useLocation();
-  const active = location.pathname === to;
+  const active = location.pathname === to || location.pathname === `${to}/`;
   return (
     <Link to={to} className={`group relative flex items-center justify-center p-2 transition-colors hover:text-primary ${active ? 'text-primary' : 'text-white'}`}>
       {children}
@@ -21,6 +22,8 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+  const canonicalUrl = `https://www.sbcaio.com${location.pathname.endsWith('/') ? location.pathname : location.pathname + '/'}`;
 
   const { scrollY } = useScroll();
   const backgroundPositionY = useTransform(scrollY, (y) => `${y * -0.1}px`);
@@ -38,6 +41,9 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
   return (
     <div className="min-h-screen flex flex-col relative">
+      <Helmet>
+        <link rel="canonical" href={canonicalUrl} />
+      </Helmet>
       <motion.div 
         className="fixed inset-0 z-[40] pointer-events-none"
         style={{
@@ -107,7 +113,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
             {/* Column 1 */}
             <div className="flex flex-col items-center md:items-start text-center md:text-left">
-              <img src="/logo.png" alt="SBCAIO Logo" className="h-9 w-auto mb-2 opacity-90" />
+              <img src="/logo.png" alt="SBCAIO Logo" className="h-16 md:h-20 w-auto object-contain mb-4 opacity-90" />
               <span className="text-2xl font-black text-white mb-2 font-orbitron tracking-wide">SBCAIO</span>
               <p className="text-sm">AI Infrastructure for Serious Businesses</p>
             </div>

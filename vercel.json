@@ -1,4 +1,19 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "sbcaio.com"
+        }
+      ],
+      "destination": "https://www.sbcaio.com/$1",
+      "statusCode": 301
+    }
+  ],
   "rewrites": [
     {
       "source": "/((?!api/).*)",
