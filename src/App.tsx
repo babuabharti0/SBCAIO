@@ -160,17 +160,20 @@ export default function App() {
 
   useEffect(() => {
     const verifyAssets = async () => {
-      // 1. Wait for the FIRST hero frame to load
-      const heroFrame = new Image();
-      heroFrame.src = "/hero-frames/hero_00000001.webp";
-      await new Promise((resolve) => {
+      const checkHero = new Promise((resolve) => {
+        const heroFrame = new Image();
+        heroFrame.src = "/hero-frames/hero_00000001.webp";
+
+        // Success path
         heroFrame.onload = resolve;
+
+        // Fail-safe path: If it takes > 3s, force resolve to lift the curtain anyway
+        setTimeout(resolve, 3000); 
+        heroFrame.onerror = resolve; // Also resolve on error to prevent deadlock
       });
 
-      // 2. Lift the curtain immediately so the Hero is interactive
+      await checkHero;
       setIsGlobalLoading(false);
-
-      // 3. Optional: Let the rest of the page/videos load in the background without blocking the user
     };
 
     // Trigger check if already loaded, otherwise wait for window 'load'
