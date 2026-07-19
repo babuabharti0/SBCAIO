@@ -61,6 +61,7 @@ function TeamMemberCard({ member, idx }: { member: TeamMember; idx: number; key?
           src={imgSrc}
           alt={member.name}
           onError={() => {
+            console.error("Asset not found at path:", imgSrc);
             if (fallbackImages[member.imageSrc]) {
               setImgSrc(fallbackImages[member.imageSrc]);
             }
