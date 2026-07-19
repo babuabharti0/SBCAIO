@@ -14,7 +14,6 @@ export default function Hero({ onOpenAudit }: HeroProps) {
     const images: HTMLImageElement[] = [];
     for (let i = 1; i <= 125; i++) {
       const img = new Image();
-      img.onerror = () => console.error("Asset not found at path:", img.src);
       img.src = `/hero-frames/hero_${String(i).padStart(8, '0')}.webp`;
       images.push(img);
     }
