@@ -1,0 +1,232 @@
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Mozilla+Headline:wght@200..700&family=Stack+Sans+Notch:wght@200..700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --breakpoint-xs: 400px;
+  --font-sans: "Mozilla Headline", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+html, body {
+  @apply bg-black text-white overflow-x-hidden;
+}
+
+#root {
+  @apply bg-black min-h-screen w-full;
+}
+
+@layer utilities {
+  @keyframes marquee {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee 20s linear infinite;
+  }
+}
+
+@layer components {
+  .glass-immutable {
+    position: relative !important;
+    overflow: hidden !important;
+    backdrop-filter: blur(40px) saturate(130%) !important;
+    -webkit-backdrop-filter: blur(40px) saturate(130%) !important;
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+    transition: none !important;
+  }
+
+  .dark .glass-immutable {
+    background-color: rgba(20, 20, 20, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05) !important;
+  }
+
+  .physical-3d-glass {
+    position: relative !important;
+    overflow: hidden !important;
+    backdrop-filter: blur(40px) !important;
+    -webkit-backdrop-filter: blur(40px) !important;
+    background-color: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.06), inset 0 1px 1px rgba(255, 255, 255, 0.1) !important;
+    transition: none !important;
+  }
+
+  .dark .physical-3d-glass {
+    background-color: rgba(20, 20, 20, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.04) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.02) !important;
+  }
+
+  .liquid-glass-card {
+    position: relative !important;
+    overflow: hidden !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.02) 100%) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+    backdrop-filter: blur(36px) saturate(130%) !important;
+    -webkit-backdrop-filter: blur(36px) saturate(130%) !important;
+    box-shadow: 
+      /* Realistic physical soft drop shadow */
+      0 20px 45px -12px rgba(0, 0, 0, 0.03),
+      0 1px 3px rgba(0, 0, 0, 0.01),
+      /* Double physical 3D frame bevels */
+      inset 0 0 0 1.5px rgba(255, 255, 255, 0.25),
+      /* Liquid glare top-lighting reflection - softer & highly transparent */
+      inset 0 16px 32px -4px rgba(255, 255, 255, 0.25),
+      /* Bottom refraction glow (simulating light passing through glass) */
+      inset 0 -14px 24px -6px rgba(255, 255, 255, 0.02),
+      inset 0 -1px 3px rgba(255, 255, 255, 0.15) !important;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .dark .liquid-glass-card {
+    background: linear-gradient(135deg, rgba(20, 20, 25, 0.08) 0%, rgba(10, 10, 15, 0.03) 100%) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(40px) saturate(135%) !important;
+    -webkit-backdrop-filter: blur(40px) saturate(135%) !important;
+    box-shadow: 
+      /* Heavy dark physical card shadow */
+      0 30px 60px -15px rgba(0, 0, 0, 0.55),
+      0 1px 2px rgba(0, 0, 0, 0.15),
+      /* Inset 3D frame refractors */
+      inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+      /* Specular dark glass crescent glare - softer to prevent milky white wash */
+      inset 0 16px 28px -4px rgba(255, 255, 255, 0.08),
+      /* Fluid deep purple/blue refraction core */
+      inset 0 -20px 35px -10px rgba(255, 255, 255, 0.03),
+      inset 0 -1px 2px rgba(255, 255, 255, 0.03) !important;
+  }
+
+  /* Specular 3D Glass Arc reflection layer */
+  .liquid-glass-card::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 45% !important;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.25) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.01) !important;
+    pointer-events: none !important;
+    z-index: 2 !important;
+    opacity: 0.9 !important;
+    transform: translateZ(0);
+  }
+
+  .dark .liquid-glass-card::before {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 100%) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.005) !important;
+    opacity: 0.85 !important;
+  }
+
+  .liquid-glass-track {
+    background: rgba(28, 28, 35, 0.55) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+    backdrop-filter: blur(28px) !important;
+    -webkit-backdrop-filter: blur(28px) !important;
+    box-shadow: 
+      inset 0 3px 6px rgba(0, 0, 0, 0.35),
+      inset 0 -1.5px 2px rgba(255, 255, 255, 0.12),
+      0 12px 28px -4px rgba(0, 0, 0, 0.24),
+      0 0 1px 1px rgba(255, 255, 255, 0.08) !important;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .dark .liquid-glass-track {
+    background: rgba(14, 15, 20, 0.75) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 
+      inset 0 3px 6px rgba(0, 0, 0, 0.5),
+      inset 0 -1.5px 2px rgba(255, 255, 255, 0.06),
+      0 12px 32px -4px rgba(0, 0, 0, 0.6),
+      0 0 1px 1px rgba(255, 255, 255, 0.04) !important;
+  }
+
+  .liquid-glass-knob {
+    background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.92) 0%, rgba(235, 235, 245, 0.5) 40%, rgba(130, 130, 145, 0.15) 75%, rgba(0, 0, 0, 0.25) 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.45) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    box-shadow:
+      0 14px 28px rgba(0, 0, 0, 0.38),
+      0 8px 12px rgba(0, 0, 0, 0.24),
+      inset 0 2.5px 4px rgba(255, 255, 255, 0.9),
+      inset 0 -4px 8px rgba(0, 0, 0, 0.28),
+      0 0 1px 1px rgba(255, 255, 255, 0.3) !important;
+  }
+
+  .dark .liquid-glass-knob {
+    background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.85) 0%, rgba(200, 200, 200, 0.25) 45%, rgba(30, 30, 30, 0.2) 75%, rgba(0, 0, 0, 0.4) 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    box-shadow:
+      0 16px 32px rgba(0, 0, 0, 0.55),
+      0 10px 14px rgba(0, 0, 0, 0.35),
+      inset 0 2.5px 4px rgba(255, 255, 255, 0.75),
+      inset 0 -4px 8px rgba(0, 0, 0, 0.45),
+      0 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+  }
+
+  .animate-spin-slow {
+    animation: spin 8s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+/* Custom scrollbar to keep layout pristine */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5);
+}
+
+/* Lenis optimization for 120hz smooth scrolling */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
